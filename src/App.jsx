@@ -1,4 +1,6 @@
 import { useState } from "react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const DESTINATIONS = [
   "Surat", "Nashik", "Aurangabad", "Gevrai", "Beed", "Jalna", "Latur",
@@ -359,16 +361,13 @@ export default function App() {
     setErrors({});
   };
 
-  const handlePrint = () => {
-    const printContent = document.getElementById("ticket-print");
-    const w = window.open("", "_blank");
-    w.document.write(`<html><head><title>Ticket - ${currentTicket.ticketNo}</title>
-      <style>body{margin:0;padding:20px;background:#f5f5f5;display:flex;justify-content:center;}
-      @media print{body{background:#fff;}}</style></head>
-      <body>${printContent.outerHTML}</body></html>`);
-    w.document.close();
-    w.focus();
-    setTimeout(() => { w.print(); }, 500);
+  const handlePrint = async () => {
+    const element = document.getElementById("ticket-print");
+    const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [canvas.width / 2, canvas.height / 2] });
+    pdf.addImage(imgData, "PNG", 0, 0, canvas.width / 2, canvas.height / 2);
+    pdf.save(`Ticket-${currentTicket.ticketNo}.pdf`);
   };
 
   const inp = (field, label, type = "text", placeholder = "") => (
