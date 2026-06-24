@@ -89,9 +89,11 @@ function TicketPrint({ booking }) {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
           <div>
             <div style={{ fontSize: 26, fontWeight: 900, color: "#1a237e", letterSpacing: 1 }}>IMRAN TRAVELS</div>
-            <div style={{ fontSize: 10, color: "#555", letterSpacing: 2, fontWeight: 600 }}>BUS TICKET / BOARDING PASS</div>
           </div>
-          <div style={{ fontSize: 44 }}>🚌</div>
+          <div style={{ textAlign: "right" }}>
+            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700 }}>📞 CONTACT</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#333" }}>7984061265 | 9824720467 | 9824151616</div>
+          </div>
         </div>
         <hr style={{ border: "none", borderTop: "2px solid #e0e0e0", margin: "8px 0" }} />
 
@@ -146,8 +148,8 @@ function TicketPrint({ booking }) {
           </div>
         </div>
 
-        {/* Pickup + Journey by + Mobile */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, marginBottom: 40, borderTop: "1px solid #e0e0e0", paddingTop: 6 }}>
+        {/* Pickup + Journey by */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 40, borderTop: "1px solid #e0e0e0", paddingTop: 6 }}>
           <div>
             <div style={{ fontSize: 7, color: "#1a237e", fontWeight: 700 }}>📌 PICKUP POINT</div>
             <div style={{ fontSize: 11, fontWeight: 600 }}>{booking.pickupPoint || "--"}</div>
@@ -155,11 +157,6 @@ function TicketPrint({ booking }) {
           <div>
             <div style={{ fontSize: 7, color: "#1a237e", fontWeight: 700 }}>🚌 JOURNEY BY</div>
             <div style={{ fontSize: 11, fontWeight: 600 }}>Shihori Travels</div>
-          </div>
-          <div>
-            <div style={{ fontSize: 7, color: "#1a237e", fontWeight: 700 }}>📞 CONTACT</div>
-            <div style={{ fontSize: 10, fontWeight: 600 }}>7984061265 | 9824720467</div>
-            <div style={{ fontSize: 10, fontWeight: 600 }}>9824151616</div>
           </div>
         </div>
 
@@ -205,18 +202,9 @@ function TicketPrint({ booking }) {
           <div style={{ fontSize: 10, fontWeight: 600 }}>{booking.pickupPoint || "--"}</div>
         </div>
 
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <QRPlaceholder value={booking.ticketNo} />
-          <div>
-            <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>TICKET NO</div>
-            <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e", wordBreak: "break-all" }}>{booking.ticketNo}</div>
-          </div>
-        </div>
-
-        <div style={{ borderTop: "1px solid #e0e0e0", paddingTop: 6 }}>
-          <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>📞 CONTACT</div>
-          <div style={{ fontSize: 9, fontWeight: 600 }}>7984061265 | 9824720467</div>
-          <div style={{ fontSize: 9, fontWeight: 600 }}>9824151616</div>
+        <div style={{ background: "#e8eaf6", borderRadius: 8, padding: "10px 12px", textAlign: "center" }}>
+          <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e", marginBottom: 4 }}>TICKET NO</div>
+          <div style={{ fontSize: 11, fontWeight: 900, color: "#1a237e", wordBreak: "break-all", letterSpacing: 1 }}>{booking.ticketNo}</div>
         </div>
 
         <div style={{ textAlign: "center", fontSize: 8, color: "#888", marginTop: "auto" }}>HAVE A SAFE JOURNEY!</div>
