@@ -12,33 +12,31 @@ const DESTINATIONS = [
 
 const PAYMENT_MODES = ["Cash", "Online"];
 
-// Exact Shihori Seat Layout
-// Left: Upper(Blue)=B,C,F,G,J,K | Lower(Green)=A,D,E,H,I,L
-// Right: Lower(Green)=3-4,5-6,11-12,13-14,19-20,21-22 | Upper(Blue)=1-2,7-8,9-10,15-16,17-18,23-24
-
-const SHIHORI_ROWS = [
-  { leftUpper: "B", leftLower: "A", rightLower: "3-4",   rightUpper: "1-2"   },
-  { leftUpper: "C", leftLower: "D", rightLower: "5-6",   rightUpper: "7-8"   },
-  { leftUpper: "F", leftLower: "E", rightLower: "11-12", rightUpper: "9-10"  },
-  { leftUpper: "G", leftLower: "H", rightLower: "13-14", rightUpper: "15-16" },
-  { leftUpper: "J", leftLower: "I", rightLower: "19-20", rightUpper: "17-18" },
-  { leftUpper: "K", leftLower: "L", rightLower: "21-22", rightUpper: "23-24" },
+const PICKUP_POINTS = [
+  "Sardar Market Parsi Panchayat Parking",
+  "Kadodra Nilam Hotel",
+  "Palsana Sabar Hotel",
+  "Navsari",
+  "Chikhli"
 ];
 
-// Format date: 2026-06-25 → 25/06/2026
+const SHIHORI_ROWS = [
+  { leftUpper: "B",  leftLower: "A",  rightLower: "3-4",   rightUpper: "1-2"   },
+  { leftUpper: "C",  leftLower: "D",  rightLower: "5-6",   rightUpper: "7-8"   },
+  { leftUpper: "F",  leftLower: "E",  rightLower: "11-12", rightUpper: "9-10"  },
+  { leftUpper: "G",  leftLower: "H",  rightLower: "13-14", rightUpper: "15-16" },
+  { leftUpper: "J",  leftLower: "I",  rightLower: "19-20", rightUpper: "17-18" },
+  { leftUpper: "K",  leftLower: "L",  rightLower: "21-22", rightUpper: "23-24" },
+];
+
 function formatDate(dateStr) {
   if (!dateStr) return "--";
   const [y, m, d] = dateStr.split("-");
   return `${d}/${m}/${y}`;
 }
 
-// Format seat name: L1A-Lo → L1A Lower, R1-Up → R1 Upper
-function formatSeat(seatId) {
-  return seatId.replace("-Lo", " Lower").replace("-Up", " Upper");
-}
-
 function formatSeats(seats) {
-  return seats?.map(formatSeat).join(", ") || "--";
+  return seats?.join(", ") || "--";
 }
 
 function generateTicketNo(busNo) {
@@ -47,7 +45,7 @@ function generateTicketNo(busNo) {
   const mm = String(now.getMonth() + 1).padStart(2, "0");
   const yy = String(now.getFullYear()).slice(2);
   const rand = String(Math.floor(Math.random() * 9000) + 1000);
-  return `IM${busNo}${dd}${mm}${yy}${rand}`;
+  return `IM${busNo || "XX"}${dd}${mm}${yy}${rand}`;
 }
 
 function QRPlaceholder({ value }) {
@@ -74,160 +72,171 @@ function QRPlaceholder({ value }) {
 function TicketPrint({ booking }) {
   return (
     <div id="ticket-print" style={{
-      fontFamily: "Arial, sans-serif", width: 760, background: "#fff",
+      fontFamily: "Arial, sans-serif", width: 780, background: "#fff",
       display: "flex", border: "2px solid #e0e0e0",
       boxShadow: "0 2px 12px rgba(0,0,0,0.12)"
     }}>
-      {/* LEFT */}
-      <div style={{ flex: 1.4, padding: "24px 28px", position: "relative", overflow: "hidden" }}>
+      {/* LEFT SIDE */}
+      <div style={{ flex: 1.5, padding: "20px 24px", position: "relative", overflow: "hidden" }}>
+        {/* Blue diagonal bottom */}
         <div style={{
-          position: "absolute", bottom: 0, left: 0, right: 0, height: 70,
+          position: "absolute", bottom: 0, left: 0, right: 0, height: 65,
           background: "linear-gradient(135deg, #1a237e 60%, #c9a84c 100%)",
           clipPath: "polygon(0 40%, 100% 0, 100% 100%, 0 100%)"
         }} />
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+
+        {/* Header */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
           <div>
-            <div style={{ fontSize: 28, fontWeight: 900, color: "#1a237e", letterSpacing: 1 }}>IMRAN TRAVELS</div>
-            <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, fontWeight: 600 }}>BUS TICKET / BOARDING PASS</div>
+            <div style={{ fontSize: 26, fontWeight: 900, color: "#1a237e", letterSpacing: 1 }}>IMRAN TRAVELS</div>
+            <div style={{ fontSize: 10, color: "#555", letterSpacing: 2, fontWeight: 600 }}>BUS TICKET / BOARDING PASS</div>
           </div>
-          <div style={{ fontSize: 48 }}>🚌</div>
+          <div style={{ fontSize: 44 }}>🚌</div>
         </div>
-        <hr style={{ border: "none", borderTop: "2px solid #e0e0e0", margin: "12px 0" }} />
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 0, marginBottom: 0 }}>
+        <hr style={{ border: "none", borderTop: "2px solid #e0e0e0", margin: "8px 0" }} />
+
+        {/* Row 1: Passenger, Bus, Total Seats, Seat No */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", marginBottom: 0 }}>
           {[
             { label: "1. PASSENGER NAME", value: booking.passengerName },
             { label: "2. BUS NO", value: booking.busNo },
             { label: "3. TOTAL SEATS", value: booking.selectedSeats?.length },
             { label: "4. SEAT NO", value: formatSeats(booking.selectedSeats) },
           ].map((f, i) => (
-            <div key={i} style={{ borderRight: i < 3 ? "1px solid #e0e0e0" : "none", borderBottom: "1px solid #e0e0e0", padding: "8px 10px" }}>
-              <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e", marginBottom: 4 }}>{f.label}</div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "#222" }}>{f.value || "--"}</div>
+            <div key={i} style={{ borderRight: i < 3 ? "1px solid #e0e0e0" : "none", borderBottom: "1px solid #e0e0e0", padding: "7px 8px" }}>
+              <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e", marginBottom: 3 }}>{f.label}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "#222" }}>{f.value || "--"}</div>
             </div>
           ))}
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 0, marginBottom: 16 }}>
+
+        {/* Row 2: Date, Journey, Amount */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginBottom: 10 }}>
           {[
             { label: "5. JOURNEY DATE", value: formatDate(booking.journeyDate) },
-            { label: "6. JOURNEY", value: booking.to },
+            { label: "6. JOURNEY TO", value: booking.to },
             { label: "7. AMOUNT", value: `₹${booking.amount}` },
           ].map((f, i) => (
-            <div key={i} style={{ borderRight: i < 2 ? "1px solid #e0e0e0" : "none", borderBottom: "1px solid #e0e0e0", padding: "8px 10px" }}>
-              <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e", marginBottom: 4 }}>{f.label}</div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "#222" }}>{f.value || "--"}</div>
+            <div key={i} style={{ borderRight: i < 2 ? "1px solid #e0e0e0" : "none", borderBottom: "1px solid #e0e0e0", padding: "7px 8px" }}>
+              <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e", marginBottom: 3 }}>{f.label}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "#222" }}>{f.value || "--"}</div>
             </div>
           ))}
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 8 }}>
+
+        {/* Info Row */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, marginBottom: 6 }}>
           <div>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700 }}>📍 FROM</div>
-            <div style={{ fontSize: 13, fontWeight: 600 }}>{booking.from || "--"}</div>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700, marginTop: 6 }}>📍 TO</div>
-            <div style={{ fontSize: 13, fontWeight: 600 }}>{booking.to || "--"}</div>
+            <div style={{ fontSize: 7, color: "#1a237e", fontWeight: 700 }}>📍 FROM</div>
+            <div style={{ fontSize: 12, fontWeight: 600 }}>{booking.from || "--"}</div>
+            <div style={{ fontSize: 7, color: "#1a237e", fontWeight: 700, marginTop: 4 }}>📍 TO</div>
+            <div style={{ fontSize: 12, fontWeight: 600 }}>{booking.to || "--"}</div>
           </div>
           <div>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700 }}>📅 DATE</div>
-            <div style={{ fontSize: 13, fontWeight: 600 }}>{formatDate(booking.journeyDate)}</div>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700, marginTop: 6 }}>🕐 TIME</div>
-            <div style={{ fontSize: 13, fontWeight: 600 }}>{booking.time || "--"}</div>
+            <div style={{ fontSize: 7, color: "#1a237e", fontWeight: 700 }}>📅 DATE</div>
+            <div style={{ fontSize: 12, fontWeight: 600 }}>{formatDate(booking.journeyDate)}</div>
+            <div style={{ fontSize: 7, color: "#1a237e", fontWeight: 700, marginTop: 4 }}>🕐 TIME</div>
+            <div style={{ fontSize: 12, fontWeight: 600 }}>{booking.time || "--"}</div>
           </div>
           <div>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700 }}>👤 BOOKING BY</div>
-            <div style={{ fontSize: 13, fontWeight: 600 }}>Imran Travels</div>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700, marginTop: 6 }}>💳 PAYMENT MODE</div>
-            <div style={{ fontSize: 13, fontWeight: 600 }}>{booking.paymentMode || "--"}</div>
-          </div>
-        </div>
-        {/* Pickup Point + Journey by + Mobile */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8, borderTop: "1px solid #e0e0e0", paddingTop: 8 }}>
-          <div>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700 }}>📌 PICKUP POINT</div>
-            <div style={{ fontSize: 12, fontWeight: 600 }}>{booking.pickupPoint || "--"}</div>
-          </div>
-          <div>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700 }}>🚌 JOURNEY BY</div>
-            <div style={{ fontSize: 12, fontWeight: 600 }}>Shihori Travels</div>
+            <div style={{ fontSize: 7, color: "#1a237e", fontWeight: 700 }}>👤 BOOKING BY</div>
+            <div style={{ fontSize: 12, fontWeight: 600 }}>Imran Travels</div>
+            <div style={{ fontSize: 7, color: "#1a237e", fontWeight: 700, marginTop: 4 }}>💳 PAYMENT</div>
+            <div style={{ fontSize: 12, fontWeight: 600 }}>{booking.paymentMode || "--"}</div>
           </div>
         </div>
-        <div style={{ borderTop: "1px solid #e0e0e0", paddingTop: 6, marginBottom: 44 }}>
-          <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700, marginBottom: 3 }}>📞 CONTACT</div>
-          <div style={{ fontSize: 11, fontWeight: 600, color: "#333" }}>7984061265 | 9824720467 | 9824151616</div>
+
+        {/* Pickup + Journey by + Mobile */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, marginBottom: 40, borderTop: "1px solid #e0e0e0", paddingTop: 6 }}>
+          <div>
+            <div style={{ fontSize: 7, color: "#1a237e", fontWeight: 700 }}>📌 PICKUP POINT</div>
+            <div style={{ fontSize: 11, fontWeight: 600 }}>{booking.pickupPoint || "--"}</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 7, color: "#1a237e", fontWeight: 700 }}>🚌 JOURNEY BY</div>
+            <div style={{ fontSize: 11, fontWeight: 600 }}>Shihori Travels</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 7, color: "#1a237e", fontWeight: 700 }}>📞 CONTACT</div>
+            <div style={{ fontSize: 10, fontWeight: 600 }}>7984061265 | 9824720467</div>
+            <div style={{ fontSize: 10, fontWeight: 600 }}>9824151616</div>
+          </div>
         </div>
-        <div style={{ position: "absolute", bottom: 12, left: 0, right: 0, textAlign: "center", color: "#fff", fontSize: 10, fontWeight: 700, letterSpacing: 1 }}>
+
+        <div style={{ position: "absolute", bottom: 10, left: 0, right: 0, textAlign: "center", color: "#fff", fontSize: 9, fontWeight: 700, letterSpacing: 1 }}>
           THANK YOU FOR TRAVELING WITH US!
         </div>
       </div>
+
       {/* DIVIDER */}
       <div style={{ width: 2, background: "repeating-linear-gradient(to bottom, #ccc 0px, #ccc 8px, transparent 8px, transparent 14px)" }} />
-      {/* RIGHT */}
-      <div style={{ width: 220, padding: "24px 20px", display: "flex", flexDirection: "column", gap: 10 }}>
+
+      {/* RIGHT SIDE */}
+      <div style={{ width: 220, padding: "20px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
         <div style={{ textAlign: "center", marginBottom: 4 }}>
-          <span style={{ color: "#c9a84c" }}>★</span>
-          <span style={{ fontSize: 15, fontWeight: 900, color: "#1a237e", margin: "0 6px" }}>IMRAN TRAVELS</span>
-          <span style={{ color: "#c9a84c" }}>★</span>
+          <span style={{ color: "#c9a84c", fontSize: 14 }}>★</span>
+          <span style={{ fontSize: 14, fontWeight: 900, color: "#1a237e", margin: "0 6px" }}>IMRAN TRAVELS</span>
+          <span style={{ color: "#c9a84c", fontSize: 14 }}>★</span>
         </div>
-        <div style={{ borderBottom: "1px solid #e0e0e0", paddingBottom: 8 }}>
-          <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>PASSENGER NAME</div>
-          <div style={{ fontSize: 14, fontWeight: 600 }}>{booking.passengerName || "--"}</div>
-          {booking.mobile && <div style={{ fontSize: 11, color: "#555", marginTop: 2 }}>📞 {booking.mobile}</div>}
+
+        <div style={{ borderBottom: "1px solid #e0e0e0", paddingBottom: 7 }}>
+          <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>PASSENGER NAME</div>
+          <div style={{ fontSize: 13, fontWeight: 600 }}>{booking.passengerName || "--"}</div>
+          {booking.mobile && <div style={{ fontSize: 10, color: "#555", marginTop: 2 }}>📞 {booking.mobile}</div>}
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, borderBottom: "1px solid #e0e0e0", paddingBottom: 8 }}>
-          <div><div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>BUS NO</div><div style={{ fontSize: 13, fontWeight: 600 }}>{booking.busNo || "--"}</div></div>
-          <div><div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>SEAT NO</div><div style={{ fontSize: 11, fontWeight: 600 }}>{formatSeats(booking.selectedSeats)}</div></div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, borderBottom: "1px solid #e0e0e0", paddingBottom: 7 }}>
+          <div><div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>BUS NO</div><div style={{ fontSize: 12, fontWeight: 600 }}>{booking.busNo || "--"}</div></div>
+          <div><div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>SEAT NO</div><div style={{ fontSize: 10, fontWeight: 600 }}>{formatSeats(booking.selectedSeats)}</div></div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, borderBottom: "1px solid #e0e0e0", paddingBottom: 8 }}>
-          <div><div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>JOURNEY DATE</div><div style={{ fontSize: 12, fontWeight: 600 }}>{formatDate(booking.journeyDate)}</div></div>
-          <div><div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>JOURNEY</div><div style={{ fontSize: 13, fontWeight: 600 }}>{booking.to || "--"}</div></div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, borderBottom: "1px solid #e0e0e0", paddingBottom: 7 }}>
+          <div><div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>JOURNEY DATE</div><div style={{ fontSize: 11, fontWeight: 600 }}>{formatDate(booking.journeyDate)}</div></div>
+          <div><div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>JOURNEY</div><div style={{ fontSize: 12, fontWeight: 600 }}>{booking.to || "--"}</div></div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, borderBottom: "1px solid #e0e0e0", paddingBottom: 8 }}>
-          <div><div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>TOTAL SEATS</div><div style={{ fontSize: 13, fontWeight: 600 }}>{booking.selectedSeats?.length || "--"}</div></div>
-          <div><div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>AMOUNT</div><div style={{ fontSize: 13, fontWeight: 600 }}>₹{booking.amount || "--"}</div></div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, borderBottom: "1px solid #e0e0e0", paddingBottom: 7 }}>
+          <div><div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>TOTAL SEATS</div><div style={{ fontSize: 12, fontWeight: 600 }}>{booking.selectedSeats?.length || "--"}</div></div>
+          <div><div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>AMOUNT</div><div style={{ fontSize: 12, fontWeight: 600 }}>₹{booking.amount || "--"}</div></div>
         </div>
-        <div style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 4 }}>
+
+        <div style={{ borderBottom: "1px solid #e0e0e0", paddingBottom: 7 }}>
+          <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>📌 PICKUP POINT</div>
+          <div style={{ fontSize: 10, fontWeight: 600 }}>{booking.pickupPoint || "--"}</div>
+        </div>
+
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <QRPlaceholder value={booking.ticketNo} />
           <div>
-            <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>TICKET NO</div>
-            <div style={{ fontSize: 10, fontWeight: 700, color: "#222", wordBreak: "break-all" }}>{booking.ticketNo}</div>
+            <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>TICKET NO</div>
+            <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e", wordBreak: "break-all" }}>{booking.ticketNo}</div>
           </div>
         </div>
+
         <div style={{ borderTop: "1px solid #e0e0e0", paddingTop: 6 }}>
-          <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>📌 PICKUP POINT</div>
-          <div style={{ fontSize: 11, fontWeight: 600 }}>{booking.pickupPoint || "--"}</div>
+          <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>📞 CONTACT</div>
+          <div style={{ fontSize: 9, fontWeight: 600 }}>7984061265 | 9824720467</div>
+          <div style={{ fontSize: 9, fontWeight: 600 }}>9824151616</div>
         </div>
-        <div style={{ borderTop: "1px solid #e0e0e0", paddingTop: 6 }}>
-          <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>📞 CONTACT</div>
-          <div style={{ fontSize: 10, fontWeight: 600 }}>7984061265</div>
-          <div style={{ fontSize: 10, fontWeight: 600 }}>9824720467</div>
-          <div style={{ fontSize: 10, fontWeight: 600 }}>9824151616</div>
-        </div>
-        <div style={{ textAlign: "center", fontSize: 9, color: "#888", marginTop: "auto" }}>HAVE A SAFE JOURNEY!</div>
+
+        <div style={{ textAlign: "center", fontSize: 8, color: "#888", marginTop: "auto" }}>HAVE A SAFE JOURNEY!</div>
       </div>
     </div>
   );
 }
 
-const PICKUP_POINTS = [
-  "Sardar Market Parsi Panchayat Parking",
-  "Kadodra Nilam Hotel",
-  "Palsana Sabar Hotel",
-  "Navsari",
-  "Chikhli"
-];
-
 const emptyForm = {
-  passengerName: "", busNo: "", journeyDate: "",
-  from: "", to: "", time: "", amount: "", paymentMode: "Cash",
-  pickupPoint: "", mobile: ""
+  passengerName: "", mobile: "", busNo: "", journeyDate: "",
+  from: "", to: "", pickupPoint: "", time: "", amount: "", paymentMode: "Cash"
 };
 
 function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
-  const totalSeats = 24; // 6 rows x 4 seats = 24
+  const totalSeats = 24;
   const available = totalSeats - bookedSeats.length - selectedSeats.length;
 
   const SeatBtn = ({ seatId, isUpper }) => {
     const isBooked = bookedSeats.includes(seatId);
     const isSelected = selectedSeats.includes(seatId);
-    // Blue = Upper, Green = Lower, Yellow = Selected, Red = Booked
     const bg = isBooked ? "#f44336" : isSelected ? "#ffc107" : isUpper ? "#2196f3" : "#4caf50";
     const textColor = isSelected ? "#000" : "#fff";
     return (
@@ -241,7 +250,6 @@ function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
           minWidth: 52, minHeight: 40,
           display: "flex", alignItems: "center", justifyContent: "center",
           boxShadow: isSelected ? "0 0 8px #ffc107" : "0 2px 4px rgba(0,0,0,0.3)",
-          transition: "transform 0.1s",
           opacity: isBooked ? 0.6 : 1
         }}
         title={`Seat ${seatId} - ${isUpper ? "Upper" : "Lower"}`}
@@ -253,30 +261,25 @@ function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
 
   return (
     <div style={{ background: "#1a1a2e", borderRadius: 12, padding: 20, userSelect: "none" }}>
-      {/* Legend */}
-      <div style={{ display: "flex", gap: 16, marginBottom: 16, justifyContent: "center", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 12, marginBottom: 16, justifyContent: "center", flexWrap: "wrap" }}>
         {[
           { color: "#2196f3", label: "Upper (Available)" },
           { color: "#4caf50", label: "Lower (Available)" },
           { color: "#f44336", label: "Booked" },
           { color: "#ffc107", label: "Selected" },
         ].map(l => (
-          <div key={l.label} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <div key={l.label} style={{ display: "flex", alignItems: "center", gap: 5 }}>
             <div style={{ width: 14, height: 14, background: l.color, borderRadius: 3 }} />
             <span style={{ color: "#fff", fontSize: 10 }}>{l.label}</span>
           </div>
         ))}
       </div>
 
-      {/* Driver */}
       <div style={{ textAlign: "center", color: "#c9a84c", fontSize: 12, fontWeight: 700, marginBottom: 12 }}>
         🚌 DRIVER — FRONT
       </div>
 
-      {/* Bus Body */}
       <div style={{ background: "#16213e", borderRadius: 8, padding: "16px 12px", border: "2px solid #c9a84c" }}>
-        
-        {/* Column Headers */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 30px 1fr 1fr", gap: 6, marginBottom: 10 }}>
           <div style={{ textAlign: "center", color: "#2196f3", fontSize: 10, fontWeight: 700 }}>UPPER</div>
           <div style={{ textAlign: "center", color: "#4caf50", fontSize: 10, fontWeight: 700 }}>LOWER</div>
@@ -287,24 +290,19 @@ function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
 
         {SHIHORI_ROWS.map((row, i) => (
           <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 30px 1fr 1fr", gap: 6, marginBottom: 8 }}>
-            {/* Left Upper (Blue) */}
             <SeatBtn seatId={row.leftUpper} isUpper={true} />
-            {/* Left Lower (Green) */}
             <SeatBtn seatId={row.leftLower} isUpper={false} />
-            {/* Aisle */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <div style={{ width: 2, height: "100%", background: "#333", minHeight: 40 }} />
             </div>
-            {/* Right Lower (Green) */}
             <SeatBtn seatId={row.rightLower} isUpper={false} />
-            {/* Right Upper (Blue) */}
             <SeatBtn seatId={row.rightUpper} isUpper={true} />
           </div>
         ))}
       </div>
 
       <div style={{ textAlign: "center", color: "#9fa8da", fontSize: 11, marginTop: 12 }}>
-        Total: 24 seats | Available: {available} | Selected: {selectedSeats.length}
+        Total: {totalSeats} seats | Available: {available} | Selected: {selectedSeats.length}
       </div>
     </div>
   );
@@ -312,16 +310,15 @@ function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
 
 export default function App() {
   const [view, setView] = useState("form");
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState({ ...emptyForm });
   const [errors, setErrors] = useState({});
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [bookings, setBookings] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("imran_bookings_v2") || "[]"); } catch { return []; }
+    try { return JSON.parse(localStorage.getItem("imran_bookings_v3") || "[]"); } catch { return []; }
   });
   const [currentTicket, setCurrentTicket] = useState(null);
   const [search, setSearch] = useState("");
 
-  // All booked seat ids across all bookings
   const allBookedSeats = bookings.flatMap(b => b.selectedSeats || []);
 
   const toggleSeat = (seatId) => {
@@ -354,11 +351,11 @@ export default function App() {
     };
     const updated = [ticket, ...bookings];
     setBookings(updated);
-    localStorage.setItem("imran_bookings_v2", JSON.stringify(updated));
+    localStorage.setItem("imran_bookings_v3", JSON.stringify(updated));
     setCurrentTicket(ticket);
     setSelectedSeats([]);
     setView("ticket");
-    setForm(emptyForm);
+    setForm({ ...emptyForm });
     setErrors({});
   };
 
@@ -378,11 +375,15 @@ export default function App() {
         type={type}
         value={form[field]}
         placeholder={placeholder}
-        onChange={e => { setForm(f => ({ ...f, [field]: e.target.value })); setErrors(er => ({ ...er, [field]: "" })); }}
+        onChange={e => {
+          const val = e.target.value;
+          setForm(f => ({ ...f, [field]: val }));
+          setErrors(er => ({ ...er, [field]: "" }));
+        }}
         style={{
           padding: "9px 12px", borderRadius: 6, fontSize: 13,
           border: errors[field] ? "1.5px solid #e53935" : "1.5px solid #c5cae9",
-          outline: "none", background: "#f8f9ff"
+          outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box"
         }}
       />
       {errors[field] && <span style={{ fontSize: 10, color: "#e53935" }}>{errors[field]}</span>}
@@ -394,12 +395,15 @@ export default function App() {
       <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>{label}</label>
       <select
         value={form[field]}
-        onChange={e => { setForm(f => ({ ...f, [field]: e.target.value })); setErrors(er => ({ ...er, [field]: "" })); }}
+        onChange={e => {
+          const val = e.target.value;
+          setForm(f => ({ ...f, [field]: val }));
+          setErrors(er => ({ ...er, [field]: "" }));
+        }}
         style={{
           padding: "9px 12px", borderRadius: 6, fontSize: 13,
           border: errors[field] ? "1.5px solid #e53935" : "1.5px solid #c5cae9",
-          outline: "none", background: "#f8f9ff",
-          color: form[field] ? "#222" : "#999"
+          outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box"
         }}
       >
         <option value="">-- Select --</option>
@@ -427,10 +431,7 @@ export default function App() {
           <div style={{ color: "#c5cae9", fontSize: 10, letterSpacing: 2, marginTop: 2 }}>BOOKING MANAGEMENT SYSTEM</div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
-          {[
-            { key: "form", label: "📝 NEW BOOKING" },
-            { key: "records", label: "📋 RECORDS" }
-          ].map(v => (
+          {[{ key: "form", label: "📝 NEW BOOKING" }, { key: "records", label: "📋 RECORDS" }].map(v => (
             <button key={v.key} onClick={() => setView(v.key)} style={{
               padding: "7px 18px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer",
               border: "2px solid #c9a84c",
@@ -448,7 +449,6 @@ export default function App() {
         {/* BOOKING FORM */}
         {view === "form" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            {/* Form fields */}
             <div style={{ background: "#fff", borderRadius: 12, padding: 24, boxShadow: "0 2px 16px rgba(26,35,126,0.08)" }}>
               <h2 style={{ color: "#1a237e", margin: "0 0 20px", fontSize: 17, fontWeight: 800, borderBottom: "2px solid #e8eaf6", paddingBottom: 10 }}>
                 🎫 Passenger & Journey Details
@@ -457,17 +457,16 @@ export default function App() {
                 {inp("passengerName", "PASSENGER NAME", "text", "Full name")}
                 {inp("mobile", "MOBILE NO", "text", "e.g. 9876543210")}
                 {inp("busNo", "BUS NO", "text", "e.g. 7035")}
+                {inp("journeyDate", "JOURNEY DATE", "date")}
                 {sel("from", "FROM", DESTINATIONS)}
                 {sel("to", "TO", DESTINATIONS)}
                 {sel("pickupPoint", "PICKUP POINT", PICKUP_POINTS)}
-                {inp("journeyDate", "JOURNEY DATE", "date")}
                 {inp("time", "DEPARTURE TIME", "text", "e.g. 08:30 PM")}
                 {inp("amount", "AMOUNT (₹)", "number", "e.g. 800")}
                 {sel("paymentMode", "PAYMENT MODE", PAYMENT_MODES)}
               </div>
             </div>
 
-            {/* Seat Map */}
             <div style={{ background: "#fff", borderRadius: 12, padding: 24, boxShadow: "0 2px 16px rgba(26,35,126,0.08)" }}>
               <h2 style={{ color: "#1a237e", margin: "0 0 16px", fontSize: 17, fontWeight: 800, borderBottom: "2px solid #e8eaf6", paddingBottom: 10 }}>
                 🪑 Select Seats
@@ -478,11 +477,7 @@ export default function App() {
                   ✅ Selected: <strong>{selectedSeats.join(", ")}</strong> ({selectedSeats.length} seat{selectedSeats.length > 1 ? "s" : ""})
                 </div>
               )}
-              <SeatMap
-                bookedSeats={allBookedSeats}
-                selectedSeats={selectedSeats}
-                onToggle={toggleSeat}
-              />
+              <SeatMap bookedSeats={allBookedSeats} selectedSeats={selectedSeats} onToggle={toggleSeat} />
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -538,7 +533,7 @@ export default function App() {
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                   <thead>
                     <tr style={{ background: "#e8eaf6" }}>
-                      {["Ticket No", "Passenger", "From", "To", "Date", "Bus No", "Seats", "Seat IDs", "Amount", "Payment", "Action"].map(h => (
+                      {["Ticket No", "Passenger", "Mobile", "From", "To", "Date", "Bus", "Seats", "Seat IDs", "Amount", "Payment", "Action"].map(h => (
                         <th key={h} style={{ padding: "10px 8px", textAlign: "left", color: "#1a237e", fontWeight: 700, fontSize: 11, whiteSpace: "nowrap" }}>{h}</th>
                       ))}
                     </tr>
@@ -548,12 +543,13 @@ export default function App() {
                       <tr key={i} style={{ borderBottom: "1px solid #e8eaf6", background: i % 2 === 0 ? "#fff" : "#f8f9ff" }}>
                         <td style={{ padding: "8px", fontWeight: 700, color: "#3949ab", fontSize: 10 }}>{b.ticketNo}</td>
                         <td style={{ padding: "8px" }}>{b.passengerName}</td>
+                        <td style={{ padding: "8px" }}>{b.mobile || "--"}</td>
                         <td style={{ padding: "8px" }}>{b.from}</td>
                         <td style={{ padding: "8px" }}>{b.to}</td>
                         <td style={{ padding: "8px" }}>{formatDate(b.journeyDate)}</td>
                         <td style={{ padding: "8px" }}>{b.busNo}</td>
                         <td style={{ padding: "8px", textAlign: "center" }}>{b.selectedSeats?.length}</td>
-                        <td style={{ padding: "8px", fontSize: 10 }}>{formatSeats(b.selectedSeats)}</td>
+                        <td style={{ padding: "8px", fontSize: 10 }}>{b.selectedSeats?.join(", ")}</td>
                         <td style={{ padding: "8px", fontWeight: 700 }}>₹{b.amount}</td>
                         <td style={{ padding: "8px" }}>{b.paymentMode}</td>
                         <td style={{ padding: "8px" }}>
