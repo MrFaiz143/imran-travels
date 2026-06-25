@@ -10,7 +10,7 @@ const DESTINATIONS = [
   "Ajmer", "Bangalore", "Hyderabad"
 ];
 
-const PAYMENT_MODES = ["Cash Lena He", "Online", "Cash"];
+const PAYMENT_MODES = ["Cash Lena He", "Online"];
 
 const PICKUP_POINTS = [
   "Sardar Market Parsi Panchayat Parking",
@@ -116,7 +116,7 @@ function TicketPrint({ booking }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginBottom: 10 }}>
           {[
             { label: "5. JOURNEY DATE", value: formatDate(booking.journeyDate) },
-            { label: "6. JOURNEY TO", value: booking.to },
+            { label: "6. JOURNEY", value: booking.to },
             { label: "7. AMOUNT", value: `₹${booking.amount}` },
           ].map((f, i) => (
             <div key={i} style={{ borderRight: i < 2 ? "1px solid #e0e0e0" : "none", borderBottom: "1px solid #e0e0e0", padding: "7px 8px" }}>
