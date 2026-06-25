@@ -112,14 +112,13 @@ function TicketPrint({ booking }) {
           ))}
         </div>
 
-        {/* Row 2: Date, Journey, Amount */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginBottom: 10 }}>
+        {/* Row 2: Date, Amount */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", marginBottom: 10 }}>
           {[
             { label: "5. JOURNEY DATE", value: formatDate(booking.journeyDate) },
-            { label: "6. JOURNEY", value: booking.to },
-            { label: "7. AMOUNT", value: `₹${booking.amount}` },
+            { label: "6. AMOUNT", value: `₹${booking.amount}` },
           ].map((f, i) => (
-            <div key={i} style={{ borderRight: i < 2 ? "1px solid #e0e0e0" : "none", borderBottom: "1px solid #e0e0e0", padding: "7px 8px" }}>
+            <div key={i} style={{ borderRight: i < 1 ? "1px solid #e0e0e0" : "none", borderBottom: "1px solid #e0e0e0", padding: "7px 8px" }}>
               <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e", marginBottom: 3 }}>{f.label}</div>
               <div style={{ fontSize: 12, fontWeight: 600, color: "#222" }}>{f.value || "--"}</div>
             </div>
