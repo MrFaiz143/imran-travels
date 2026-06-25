@@ -10,7 +10,7 @@ const DESTINATIONS = [
   "Ajmer", "Bangalore", "Hyderabad"
 ];
 
-const PAYMENT_MODES = ["Cash", "Online"];
+const PAYMENT_MODES = ["Cash Lena He", "Online", "Cash"];
 
 const PICKUP_POINTS = [
   "Sardar Market Parsi Panchayat Parking",
@@ -161,7 +161,7 @@ function TicketPrint({ booking }) {
         </div>
 
         <div style={{ position: "absolute", bottom: 10, left: 0, right: 0, textAlign: "center", color: "#fff", fontSize: 9, fontWeight: 700, letterSpacing: 1 }}>
-          THANK YOU FOR TRAVELING WITH US!
+          THANKS FOR CALL IMRAN TRAVELS
         </div>
       </div>
 
@@ -179,7 +179,6 @@ function TicketPrint({ booking }) {
         <div style={{ borderBottom: "1px solid #e0e0e0", paddingBottom: 7 }}>
           <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>PASSENGER NAME</div>
           <div style={{ fontSize: 13, fontWeight: 600 }}>{booking.passengerName || "--"}</div>
-          {booking.mobile && <div style={{ fontSize: 10, color: "#555", marginTop: 2 }}>📞 {booking.mobile}</div>}
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, borderBottom: "1px solid #e0e0e0", paddingBottom: 7 }}>
@@ -214,8 +213,8 @@ function TicketPrint({ booking }) {
 }
 
 const emptyForm = {
-  passengerName: "", mobile: "", busNo: "", journeyDate: "",
-  from: "", to: "", pickupPoint: "", time: "", amount: "", paymentMode: "Cash"
+  passengerName: "", ticketNo: "", busNo: "", journeyDate: "",
+  from: "", to: "", pickupPoint: "", time: "", amount: "", paymentMode: "Cash Lena He"
 };
 
 function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
@@ -318,6 +317,7 @@ export default function App() {
   const validate = () => {
     const e = {};
     if (!form.passengerName.trim()) e.passengerName = "Required";
+    if (!form.ticketNo.trim()) e.ticketNo = "Required";
     if (!form.busNo.trim()) e.busNo = "Required";
     if (!form.journeyDate) e.journeyDate = "Required";
     if (!form.from) e.from = "Required";
@@ -334,7 +334,6 @@ export default function App() {
     const ticket = {
       ...form,
       selectedSeats,
-      ticketNo: generateTicketNo(form.busNo),
       bookedAt: new Date().toISOString()
     };
     const updated = [ticket, ...bookings];
@@ -443,7 +442,7 @@ export default function App() {
               </h2>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                 {inp("passengerName", "PASSENGER NAME", "text", "Full name")}
-                {inp("mobile", "MOBILE NO", "text", "e.g. 9876543210")}
+                {inp("ticketNo", "TICKET NO", "text", "e.g. IM7035...")}
                 {inp("busNo", "BUS NO", "text", "e.g. 7035")}
                 {inp("journeyDate", "JOURNEY DATE", "date")}
                 {sel("from", "FROM", DESTINATIONS)}
