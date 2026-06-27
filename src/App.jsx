@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { createClient } from "@supabase/supabase-js";
+
+const SUPABASE_URL = "https://zushqnhlpuipxtwrtzrl.supabase.co";
+const SUPABASE_KEY = "sb_publishable_KRQXcNmugL-T6M_PZowRlA_WiwQGH3X";
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const DESTINATIONS = [
   "Surat", "Nashik", "Aurangabad", "Gevrai", "Beed", "Jalna", "Latur",
@@ -27,44 +32,36 @@ function formatDate(dateStr) {
 }
 
 function formatSeats(seats) {
-  return seats?.join(", ") || "--";
+  if (!seats) return "--";
+  const arr = typeof seats === "string" ? JSON.parse(seats) : seats;
+  return arr?.join(", ") || "--";
 }
 
-// Count actual passengers — double seats (3-4, 5-6 etc.) = 2 persons
 function countPassengers(seats) {
   if (!seats) return 0;
-  return seats.reduce((total, seat) => {
-    return total + (seat.includes("-") ? 2 : 1);
-  }, 0);
+  const arr = typeof seats === "string" ? JSON.parse(seats) : seats;
+  return arr.reduce((total, seat) => total + (seat.includes("-") ? 2 : 1), 0);
 }
 
 function TicketPrint({ booking }) {
+  const seats = typeof booking.selected_seats === "string"
+    ? JSON.parse(booking.selected_seats)
+    : booking.selected_seats;
+
   return (
     <div id="ticket-print" style={{
-      fontFamily: "'Arial', sans-serif",
-      width: 800,
-      background: "#fff",
-      display: "flex",
-      border: "2px solid #1a237e",
-      borderRadius: 8,
-      overflow: "hidden",
-      boxShadow: "0 4px 20px rgba(0,0,0,0.15)"
+      fontFamily: "'Arial', sans-serif", width: 800, background: "#fff",
+      display: "flex", border: "2px solid #1a237e", borderRadius: 8,
+      overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.15)"
     }}>
-
-      {/* ===== LEFT SIDE ===== */}
+      {/* LEFT SIDE */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-
         {/* Header */}
-        <div style={{
-          background: "#fff",
-          padding: "14px 20px 10px",
-          borderBottom: "2px solid #e8eaf6",
-          display: "flex", justifyContent: "space-between", alignItems: "flex-start"
-        }}>
+        <div style={{ padding: "14px 20px 10px", borderBottom: "2px solid #e8eaf6", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <div style={{ fontSize: 28, fontWeight: 900, color: "#1a237e", lineHeight: 1 }}>IMRAN TRAVELS</div>
+            <div style={{ fontSize: 28, fontWeight: 900, color: "#1a237e" }}>IMRAN TRAVELS</div>
             <div style={{ fontSize: 11, color: "#e53935", fontWeight: 700, marginTop: 2 }}>
-              Ticket No: <span style={{ color: "#1a237e" }}>{booking.ticketNo || "--"}</span>
+              Ticket No: <span style={{ color: "#1a237e" }}>{booking.ticket_no || "--"}</span>
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
@@ -74,29 +71,26 @@ function TicketPrint({ booking }) {
           </div>
         </div>
 
-        {/* Row 1: Passenger, Bus, Total Seats, Seat No */}
+        {/* Row 1 */}
         <div style={{ display: "grid", gridTemplateColumns: "1.4fr 0.8fr 0.7fr 1.1fr", borderBottom: "1px solid #e8eaf6" }}>
           {[
-            { num: "1.", label: "PASSENGER NAME", value: booking.passengerName },
-            { num: "2.", label: "BUS NO", value: booking.busNo },
-            { num: "3.", label: "TOTAL SEATS", value: countPassengers(booking.selectedSeats) },
-            { num: "4.", label: "SEAT NO", value: formatSeats(booking.selectedSeats) },
+            { label: "1. PASSENGER NAME", value: booking.passenger_name },
+            { label: "2. BUS NO", value: booking.bus_no },
+            { label: "3. TOTAL SEATS", value: countPassengers(seats) },
+            { label: "4. SEAT NO", value: formatSeats(seats) },
           ].map((f, i) => (
-            <div key={i} style={{
-              padding: "8px 12px",
-              borderRight: i < 3 ? "1px solid #e8eaf6" : "none"
-            }}>
-              <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>{f.num} {f.label}</div>
+            <div key={i} style={{ padding: "8px 12px", borderRight: i < 3 ? "1px solid #e8eaf6" : "none" }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>{f.label}</div>
               <div style={{ fontSize: 15, fontWeight: 700, color: "#111", marginTop: 3 }}>{f.value || "--"}</div>
             </div>
           ))}
         </div>
 
-        {/* Row 2: Journey Date + Amount */}
+        {/* Row 2 */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>5. JOURNEY DATE</div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#111", marginTop: 3 }}>{formatDate(booking.journeyDate)}</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#111", marginTop: 3 }}>{formatDate(booking.journey_date)}</div>
           </div>
           <div style={{ padding: "8px 12px" }}>
             <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>6. AMOUNT</div>
@@ -104,17 +98,17 @@ function TicketPrint({ booking }) {
           </div>
         </div>
 
-        {/* Row 3: From, Date, Booking By */}
+        {/* Row 3 */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📍 FROM</div>
-            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{booking.from || "--"}</div>
+            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{booking.from_city || "--"}</div>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700, marginTop: 5 }}>📍 TO</div>
-            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{booking.to || "--"}</div>
+            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{booking.to_city || "--"}</div>
           </div>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📅 DATE</div>
-            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{formatDate(booking.journeyDate)}</div>
+            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{formatDate(booking.journey_date)}</div>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700, marginTop: 5 }}>⏰ TIME</div>
             <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{booking.time || "--"}</div>
           </div>
@@ -122,15 +116,15 @@ function TicketPrint({ booking }) {
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>👤 BOOKING BY</div>
             <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Imran Travels</div>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700, marginTop: 5 }}>💳 PAYMENT</div>
-            <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>{booking.paymentMode || "--"}</div>
+            <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>{booking.payment_mode || "--"}</div>
           </div>
         </div>
 
-        {/* Row 4: Pickup + Journey By */}
+        {/* Row 4 */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📌 PICKUP POINT</div>
-            <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>{booking.pickupPoint || "--"}</div>
+            <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>{booking.pickup_point || "--"}</div>
           </div>
           <div style={{ padding: "8px 12px" }}>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>🚌 JOURNEY BY</div>
@@ -140,12 +134,12 @@ function TicketPrint({ booking }) {
 
         {/* Return Ticket */}
         <div style={{ padding: "10px 20px", borderBottom: "1px solid #e8eaf6", textAlign: "center" }}>
-          <span style={{ fontSize: 16, fontWeight: 900, color: "#111", letterSpacing: 0.5 }}>Return Ticket Available.</span>
+          <span style={{ fontSize: 16, fontWeight: 900, color: "#111" }}>Return Ticket Available.</span>
         </div>
 
         {/* Footer */}
         <div style={{ background: "#1a237e", padding: "6px 0 4px", textAlign: "center" }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#c9a84c", letterSpacing: 0.5 }}>Thanks For Connecting Imran Travels</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#c9a84c" }}>Thanks For Connecting Imran Travels</div>
           <div style={{ fontSize: 9, fontWeight: 600, color: "#fff", letterSpacing: 1 }}>THANKS FOR CALL IMRAN TRAVELS</div>
         </div>
       </div>
@@ -153,51 +147,45 @@ function TicketPrint({ booking }) {
       {/* DIVIDER */}
       <div style={{ width: 1, background: "repeating-linear-gradient(to bottom, #1a237e 0px, #1a237e 8px, transparent 8px, transparent 14px)" }} />
 
-      {/* ===== RIGHT SIDE ===== */}
+      {/* RIGHT SIDE */}
       <div style={{ width: 210, display: "flex", flexDirection: "column", background: "#fff" }}>
-
-        {/* Header */}
         <div style={{ background: "#1a237e", padding: "12px 10px", textAlign: "center" }}>
           <span style={{ color: "#c9a84c", fontSize: 14 }}>★</span>
           <span style={{ fontSize: 14, fontWeight: 900, color: "#fff", margin: "0 6px" }}>IMRAN TRAVELS</span>
           <span style={{ color: "#c9a84c", fontSize: 14 }}>★</span>
         </div>
 
-        {/* Passenger Name */}
         <div style={{ padding: "10px 14px", borderBottom: "1px solid #e8eaf6", textAlign: "center" }}>
           <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e", marginBottom: 4 }}>PASSENGER NAME</div>
-          <div style={{ fontSize: 16, fontWeight: 900, color: "#1a237e" }}>{booking.passengerName || "--"}</div>
+          <div style={{ fontSize: 16, fontWeight: 900, color: "#1a237e" }}>{booking.passenger_name || "--"}</div>
         </div>
 
-        {/* Bus + Seat */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 10px", borderRight: "1px solid #e8eaf6" }}>
-            <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>BUS NO</div>
-            <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2 }}>{booking.busNo || "--"}</div>
+            <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>BUS NO</div>
+            <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2 }}>{booking.bus_no || "--"}</div>
           </div>
           <div style={{ padding: "8px 10px" }}>
-            <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>SEAT NO</div>
-            <div style={{ fontSize: 11, fontWeight: 700, marginTop: 2 }}>{formatSeats(booking.selectedSeats)}</div>
+            <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>SEAT NO</div>
+            <div style={{ fontSize: 11, fontWeight: 700, marginTop: 2 }}>{formatSeats(seats)}</div>
           </div>
         </div>
 
-        {/* Journey Date + Journey */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 10px", borderRight: "1px solid #e8eaf6" }}>
-            <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>JOURNEY DATE</div>
-            <div style={{ fontSize: 11, fontWeight: 700, marginTop: 2 }}>{formatDate(booking.journeyDate)}</div>
+            <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>JOURNEY DATE</div>
+            <div style={{ fontSize: 11, fontWeight: 700, marginTop: 2 }}>{formatDate(booking.journey_date)}</div>
           </div>
           <div style={{ padding: "8px 10px" }}>
-            <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>JOURNEY</div>
-            <div style={{ fontSize: 12, fontWeight: 700, marginTop: 2 }}>{booking.to || "--"}</div>
+            <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>JOURNEY</div>
+            <div style={{ fontSize: 12, fontWeight: 700, marginTop: 2 }}>{booking.to_city || "--"}</div>
           </div>
         </div>
 
-        {/* Total Seats + Amount */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 10px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>TOTAL SEATS</div>
-            <div style={{ fontSize: 15, fontWeight: 700, marginTop: 2 }}>{countPassengers(booking.selectedSeats) || "--"}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, marginTop: 2 }}>{countPassengers(seats) || "--"}</div>
           </div>
           <div style={{ padding: "8px 10px" }}>
             <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>AMOUNT</div>
@@ -205,13 +193,11 @@ function TicketPrint({ booking }) {
           </div>
         </div>
 
-        {/* Pickup Point */}
         <div style={{ padding: "8px 14px", borderBottom: "1px solid #e8eaf6" }}>
-          <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>📌 PICKUP POINT</div>
-          <div style={{ fontSize: 10, fontWeight: 600, marginTop: 2 }}>{booking.pickupPoint || "--"}</div>
+          <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>📌 PICKUP POINT</div>
+          <div style={{ fontSize: 10, fontWeight: 600, marginTop: 2 }}>{booking.pickup_point || "--"}</div>
         </div>
 
-        {/* Routes */}
         <div style={{ padding: "8px 14px", flex: 1 }}>
           <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
           {[
@@ -227,7 +213,6 @@ function TicketPrint({ booking }) {
           ))}
         </div>
 
-        {/* Footer */}
         <div style={{ background: "#1a237e", padding: "8px", textAlign: "center" }}>
           <div style={{ fontSize: 8, color: "#c9a84c", fontWeight: 700 }}>HAVE A SAFE JOURNEY!</div>
         </div>
@@ -285,7 +270,7 @@ function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
       <div style={{ background: "#16213e", borderRadius: 8, padding: "16px 12px", border: "2px solid #c9a84c" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 30px 1fr 1fr", gap: 6, marginBottom: 10 }}>
           {["UPPER","LOWER","","LOWER","UPPER"].map((h,i) => (
-            <div key={i} style={{ textAlign: "center", color: i===0||i===4 ? "#2196f3" : i===1||i===3 ? "#4caf50" : "transparent", fontSize: 10, fontWeight: 700 }}>{h}</div>
+            <div key={i} style={{ textAlign: "center", color: i===0||i===4?"#2196f3":i===1||i===3?"#4caf50":"transparent", fontSize: 10, fontWeight: 700 }}>{h}</div>
           ))}
         </div>
         {SHIHORI_ROWS.map((row, i) => (
@@ -312,13 +297,31 @@ export default function App() {
   const [form, setForm] = useState({ ...emptyForm });
   const [errors, setErrors] = useState({});
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const [bookings, setBookings] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("imran_bookings_v5") || "[]"); } catch { return []; }
-  });
+  const [bookings, setBookings] = useState([]);
   const [currentTicket, setCurrentTicket] = useState(null);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const allBookedSeats = bookings.flatMap(b => b.selectedSeats || []);
+  // Load bookings from Supabase
+  useEffect(() => {
+    loadBookings();
+  }, []);
+
+  const loadBookings = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("bookings")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (!error && data) setBookings(data);
+    setLoading(false);
+  };
+
+  const allBookedSeats = bookings.flatMap(b => {
+    try { return typeof b.selected_seats === "string" ? JSON.parse(b.selected_seats) : b.selected_seats || []; }
+    catch { return []; }
+  });
 
   const toggleSeat = (seatId) => {
     setSelectedSeats(prev => prev.includes(seatId) ? prev.filter(s => s !== seatId) : [...prev, seatId]);
@@ -338,18 +341,36 @@ export default function App() {
     return e;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const e = validate();
     if (Object.keys(e).length > 0) { setErrors(e); return; }
-    const ticket = { ...form, selectedSeats, bookedAt: new Date().toISOString() };
-    const updated = [ticket, ...bookings];
-    setBookings(updated);
-    localStorage.setItem("imran_bookings_v5", JSON.stringify(updated));
-    setCurrentTicket(ticket);
-    setSelectedSeats([]);
-    setView("ticket");
-    setForm({ ...emptyForm });
-    setErrors({});
+    setSaving(true);
+    const record = {
+      passenger_name: form.passengerName,
+      ticket_no: form.ticketNo,
+      bus_no: form.busNo,
+      journey_date: form.journeyDate,
+      from_city: form.from,
+      to_city: form.to,
+      pickup_point: form.pickupPoint,
+      time: form.time,
+      amount: form.amount,
+      payment_mode: form.paymentMode,
+      selected_seats: JSON.stringify(selectedSeats),
+      booked_at: new Date().toISOString()
+    };
+    const { data, error } = await supabase.from("bookings").insert([record]).select();
+    if (!error && data) {
+      setCurrentTicket(data[0]);
+      setBookings(prev => [data[0], ...prev]);
+      setSelectedSeats([]);
+      setView("ticket");
+      setForm({ ...emptyForm });
+      setErrors({});
+    } else {
+      alert("Error saving booking! " + error?.message);
+    }
+    setSaving(false);
   };
 
   const handlePrint = async () => {
@@ -358,7 +379,7 @@ export default function App() {
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [canvas.width / 2, canvas.height / 2] });
     pdf.addImage(imgData, "PNG", 0, 0, canvas.width / 2, canvas.height / 2);
-    pdf.save(`Ticket-${currentTicket.ticketNo}.pdf`);
+    pdf.save(`Ticket-${currentTicket.ticket_no}.pdf`);
   };
 
   const inp = (field, label, type = "text", placeholder = "") => (
@@ -385,10 +406,10 @@ export default function App() {
   );
 
   const filtered = bookings.filter(b =>
-    b.passengerName?.toLowerCase().includes(search.toLowerCase()) ||
-    b.ticketNo?.toLowerCase().includes(search.toLowerCase()) ||
-    b.from?.toLowerCase().includes(search.toLowerCase()) ||
-    b.to?.toLowerCase().includes(search.toLowerCase())
+    b.passenger_name?.toLowerCase().includes(search.toLowerCase()) ||
+    b.ticket_no?.toLowerCase().includes(search.toLowerCase()) ||
+    b.from_city?.toLowerCase().includes(search.toLowerCase()) ||
+    b.to_city?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -402,7 +423,7 @@ export default function App() {
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           {[{ key: "form", label: "📝 NEW BOOKING" }, { key: "records", label: "📋 RECORDS" }].map(v => (
-            <button key={v.key} onClick={() => setView(v.key)} style={{
+            <button key={v.key} onClick={() => { setView(v.key); if(v.key==="records") loadBookings(); }} style={{
               padding: "7px 18px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer",
               border: "2px solid #c9a84c", background: view === v.key ? "#c9a84c" : "transparent", color: view === v.key ? "#1a237e" : "#c9a84c"
             }}>{v.label}</button>
@@ -438,18 +459,18 @@ export default function App() {
               {errors.seats && <div style={{ color: "#e53935", fontSize: 12, marginBottom: 10 }}>⚠️ {errors.seats}</div>}
               {selectedSeats.length > 0 && (
                 <div style={{ background: "#e8eaf6", borderRadius: 8, padding: "10px 14px", marginBottom: 14, fontSize: 13 }}>
-                  ✅ Selected: <strong>{selectedSeats.join(", ")}</strong> ({selectedSeats.length} seat{selectedSeats.length > 1 ? "s" : ""})
+                  ✅ Selected: <strong>{selectedSeats.join(", ")}</strong> ({countPassengers(selectedSeats)} persons)
                 </div>
               )}
               <SeatMap bookedSeats={allBookedSeats} selectedSeats={selectedSeats} onToggle={toggleSeat} />
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <button onClick={handleSubmit} style={{
-                padding: "12px 36px", background: "#1a237e", color: "#fff",
-                borderRadius: 8, fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer",
+              <button onClick={handleSubmit} disabled={saving} style={{
+                padding: "12px 36px", background: saving ? "#9fa8da" : "#1a237e", color: "#fff",
+                borderRadius: 8, fontSize: 14, fontWeight: 700, border: "none", cursor: saving ? "not-allowed" : "pointer",
                 boxShadow: "0 3px 10px rgba(26,35,126,0.3)"
-              }}>🎟️ GENERATE TICKET</button>
+              }}>{saving ? "⏳ Saving..." : "🎟️ GENERATE TICKET"}</button>
             </div>
           </div>
         )}
@@ -476,36 +497,41 @@ export default function App() {
               <input placeholder="🔍 Search..." value={search} onChange={e => setSearch(e.target.value)}
                 style={{ padding: "8px 14px", borderRadius: 20, border: "1.5px solid #c5cae9", fontSize: 13, width: 240, outline: "none" }} />
             </div>
-            {filtered.length === 0 ? (
+            {loading ? (
+              <div style={{ textAlign: "center", padding: 40, color: "#9fa8da" }}>⏳ Loading bookings...</div>
+            ) : filtered.length === 0 ? (
               <div style={{ textAlign: "center", color: "#9fa8da", padding: 40 }}>No bookings found.</div>
             ) : (
               <div style={{ overflowX: "auto" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                   <thead>
                     <tr style={{ background: "#e8eaf6" }}>
-                      {["Ticket No","Passenger","From","To","Date","Bus","Seats","Seat IDs","Amount","Payment","Action"].map(h => (
+                      {["Ticket No","Passenger","From","To","Date","Bus","Persons","Seats","Amount","Payment","Action"].map(h => (
                         <th key={h} style={{ padding: "10px 8px", textAlign: "left", color: "#1a237e", fontWeight: 700, fontSize: 11, whiteSpace: "nowrap" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {filtered.map((b, i) => (
-                      <tr key={i} style={{ borderBottom: "1px solid #e8eaf6", background: i % 2 === 0 ? "#fff" : "#f8f9ff" }}>
-                        <td style={{ padding: "8px", fontWeight: 700, color: "#3949ab", fontSize: 10 }}>{b.ticketNo}</td>
-                        <td style={{ padding: "8px" }}>{b.passengerName}</td>
-                        <td style={{ padding: "8px" }}>{b.from}</td>
-                        <td style={{ padding: "8px" }}>{b.to}</td>
-                        <td style={{ padding: "8px" }}>{formatDate(b.journeyDate)}</td>
-                        <td style={{ padding: "8px" }}>{b.busNo}</td>
-                        <td style={{ padding: "8px", textAlign: "center" }}>{b.selectedSeats?.length}</td>
-                        <td style={{ padding: "8px", fontSize: 10 }}>{b.selectedSeats?.join(", ")}</td>
-                        <td style={{ padding: "8px", fontWeight: 700 }}>₹{b.amount}</td>
-                        <td style={{ padding: "8px" }}>{b.paymentMode}</td>
-                        <td style={{ padding: "8px" }}>
-                          <button onClick={() => { setCurrentTicket(b); setView("ticket"); }} style={{ padding: "5px 10px", background: "#1a237e", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 11, fontWeight: 700 }}>View</button>
-                        </td>
-                      </tr>
-                    ))}
+                    {filtered.map((b, i) => {
+                      const seats = typeof b.selected_seats === "string" ? JSON.parse(b.selected_seats) : b.selected_seats || [];
+                      return (
+                        <tr key={i} style={{ borderBottom: "1px solid #e8eaf6", background: i % 2 === 0 ? "#fff" : "#f8f9ff" }}>
+                          <td style={{ padding: "8px", fontWeight: 700, color: "#3949ab", fontSize: 10 }}>{b.ticket_no}</td>
+                          <td style={{ padding: "8px" }}>{b.passenger_name}</td>
+                          <td style={{ padding: "8px" }}>{b.from_city}</td>
+                          <td style={{ padding: "8px" }}>{b.to_city}</td>
+                          <td style={{ padding: "8px" }}>{formatDate(b.journey_date)}</td>
+                          <td style={{ padding: "8px" }}>{b.bus_no}</td>
+                          <td style={{ padding: "8px", textAlign: "center" }}>{countPassengers(seats)}</td>
+                          <td style={{ padding: "8px", fontSize: 10 }}>{seats.join(", ")}</td>
+                          <td style={{ padding: "8px", fontWeight: 700 }}>₹{b.amount}</td>
+                          <td style={{ padding: "8px" }}>{b.payment_mode}</td>
+                          <td style={{ padding: "8px" }}>
+                            <button onClick={() => { setCurrentTicket(b); setView("ticket"); }} style={{ padding: "5px 10px", background: "#1a237e", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 11, fontWeight: 700 }}>View</button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
