@@ -30,6 +30,14 @@ function formatSeats(seats) {
   return seats?.join(", ") || "--";
 }
 
+// Count actual passengers — double seats (3-4, 5-6 etc.) = 2 persons
+function countPassengers(seats) {
+  if (!seats) return 0;
+  return seats.reduce((total, seat) => {
+    return total + (seat.includes("-") ? 2 : 1);
+  }, 0);
+}
+
 function TicketPrint({ booking }) {
   return (
     <div id="ticket-print" style={{
@@ -71,15 +79,15 @@ function TicketPrint({ booking }) {
           {[
             { num: "1.", label: "PASSENGER NAME", value: booking.passengerName },
             { num: "2.", label: "BUS NO", value: booking.busNo },
-            { num: "3.", label: "TOTAL SEATS", value: booking.selectedSeats?.length },
+            { num: "3.", label: "TOTAL SEATS", value: countPassengers(booking.selectedSeats) },
             { num: "4.", label: "SEAT NO", value: formatSeats(booking.selectedSeats) },
           ].map((f, i) => (
             <div key={i} style={{
               padding: "8px 12px",
               borderRight: i < 3 ? "1px solid #e8eaf6" : "none"
             }}>
-              <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>{f.num} {f.label}</div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#111", marginTop: 3 }}>{f.value || "--"}</div>
+              <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>{f.num} {f.label}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#111", marginTop: 3 }}>{f.value || "--"}</div>
             </div>
           ))}
         </div>
@@ -87,46 +95,46 @@ function TicketPrint({ booking }) {
         {/* Row 2: Journey Date + Amount */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
-            <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>5. JOURNEY DATE</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#111", marginTop: 3 }}>{formatDate(booking.journeyDate)}</div>
+            <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>5. JOURNEY DATE</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#111", marginTop: 3 }}>{formatDate(booking.journeyDate)}</div>
           </div>
           <div style={{ padding: "8px 12px" }}>
-            <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>6. AMOUNT</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#111", marginTop: 3 }}>₹{booking.amount || "--"}</div>
+            <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>6. AMOUNT</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#111", marginTop: 3 }}>₹{booking.amount || "--"}</div>
           </div>
         </div>
 
         {/* Row 3: From, Date, Booking By */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700 }}>📍 FROM</div>
-            <div style={{ fontSize: 12, fontWeight: 600, marginTop: 2 }}>{booking.from || "--"}</div>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700, marginTop: 5 }}>📍 TO</div>
-            <div style={{ fontSize: 12, fontWeight: 600, marginTop: 2 }}>{booking.to || "--"}</div>
+            <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📍 FROM</div>
+            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{booking.from || "--"}</div>
+            <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700, marginTop: 5 }}>📍 TO</div>
+            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{booking.to || "--"}</div>
           </div>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700 }}>📅 DATE</div>
-            <div style={{ fontSize: 12, fontWeight: 600, marginTop: 2 }}>{formatDate(booking.journeyDate)}</div>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700, marginTop: 5 }}>⏰ TIME</div>
-            <div style={{ fontSize: 12, fontWeight: 600, marginTop: 2 }}>{booking.time || "--"}</div>
+            <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📅 DATE</div>
+            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{formatDate(booking.journeyDate)}</div>
+            <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700, marginTop: 5 }}>⏰ TIME</div>
+            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{booking.time || "--"}</div>
           </div>
           <div style={{ padding: "8px 12px" }}>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700 }}>👤 BOOKING BY</div>
-            <div style={{ fontSize: 12, fontWeight: 600, marginTop: 2 }}>Imran Travels</div>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700, marginTop: 5 }}>💳 PAYMENT</div>
-            <div style={{ fontSize: 12, fontWeight: 600, marginTop: 2 }}>{booking.paymentMode || "--"}</div>
+            <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>👤 BOOKING BY</div>
+            <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Imran Travels</div>
+            <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700, marginTop: 5 }}>💳 PAYMENT</div>
+            <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>{booking.paymentMode || "--"}</div>
           </div>
         </div>
 
         {/* Row 4: Pickup + Journey By */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700 }}>📌 PICKUP POINT</div>
-            <div style={{ fontSize: 12, fontWeight: 600, marginTop: 2 }}>{booking.pickupPoint || "--"}</div>
+            <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📌 PICKUP POINT</div>
+            <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>{booking.pickupPoint || "--"}</div>
           </div>
           <div style={{ padding: "8px 12px" }}>
-            <div style={{ fontSize: 8, color: "#1a237e", fontWeight: 700 }}>🚌 JOURNEY BY</div>
-            <div style={{ fontSize: 12, fontWeight: 600, marginTop: 2 }}>Shihori Travels</div>
+            <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>🚌 JOURNEY BY</div>
+            <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Shihori Travels</div>
           </div>
         </div>
 
@@ -188,12 +196,12 @@ function TicketPrint({ booking }) {
         {/* Total Seats + Amount */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 10px", borderRight: "1px solid #e8eaf6" }}>
-            <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>TOTAL SEATS</div>
-            <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2 }}>{booking.selectedSeats?.length || "--"}</div>
+            <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>TOTAL SEATS</div>
+            <div style={{ fontSize: 15, fontWeight: 700, marginTop: 2 }}>{countPassengers(booking.selectedSeats) || "--"}</div>
           </div>
           <div style={{ padding: "8px 10px" }}>
-            <div style={{ fontSize: 7, fontWeight: 700, color: "#1a237e" }}>AMOUNT</div>
-            <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2 }}>₹{booking.amount || "--"}</div>
+            <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>AMOUNT</div>
+            <div style={{ fontSize: 15, fontWeight: 700, marginTop: 2 }}>₹{booking.amount || "--"}</div>
           </div>
         </div>
 
@@ -293,7 +301,7 @@ function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
         ))}
       </div>
       <div style={{ textAlign: "center", color: "#9fa8da", fontSize: 11, marginTop: 12 }}>
-        Total: {totalSeats} | Available: {available} | Selected: {selectedSeats.length}
+        Total: {totalSeats} | Available: {available} | Selected: {selectedSeats.length} seats ({countPassengers(selectedSeats)} persons)
       </div>
     </div>
   );
