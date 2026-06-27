@@ -76,7 +76,7 @@ function TicketPrint({ booking }) {
           {[
             { label: "1. PASSENGER NAME", value: booking.passenger_name },
             { label: "2. BUS NO", value: booking.bus_no },
-            { label: "3. TOTAL SEATS", value: countPassengers(seats) },
+            { label: "3. TOTAL PERSONS", value: booking.total_persons || countPassengers(seats) },
             { label: "4. SEAT NO", value: formatSeats(seats) },
           ].map((f, i) => (
             <div key={i} style={{ padding: "8px 12px", borderRight: i < 3 ? "1px solid #e8eaf6" : "none" }}>
@@ -184,8 +184,8 @@ function TicketPrint({ booking }) {
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 10px", borderRight: "1px solid #e8eaf6" }}>
-            <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>TOTAL SEATS</div>
-            <div style={{ fontSize: 15, fontWeight: 700, marginTop: 2 }}>{countPassengers(seats) || "--"}</div>
+            <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>TOTAL PERSONS</div>
+            <div style={{ fontSize: 15, fontWeight: 700, marginTop: 2 }}>{booking.total_persons || countPassengers(seats) || "--"}</div>
           </div>
           <div style={{ padding: "8px 10px" }}>
             <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>AMOUNT</div>
@@ -235,16 +235,45 @@ function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
     { leftUpper: "J", leftLower: "I", rightLower: "19-20", rightUpper: "17-18" },
     { leftUpper: "K", leftLower: "L", rightLower: "21-22", rightUpper: "23-24" },
   ];
+
+  const [popup, setPopup] = useState(null); // { seatId, persons, maxPersons }
   const totalSeats = 24;
   const available = totalSeats - bookedSeats.length - selectedSeats.length;
+
+  const isDouble = (seatId) => seatId.includes("-");
+  const maxPersons = (seatId) => isDouble(seatId) ? 2 : 1;
+
+  const handleSeatClick = (seatId) => {
+    if (bookedSeats.includes(seatId)) return;
+    // If already selected — deselect karo
+    if (selectedSeats.includes(seatId)) {
+      onToggle(seatId, 0);
+      return;
+    }
+    // Single seat — seedha 1 person set karo, no popup
+    if (!isDouble(seatId)) {
+      onToggle(seatId, 1);
+      return;
+    }
+    // Double seat — popup dikhao
+    setPopup({ seatId, persons: 1, maxPersons: maxPersons(seatId) });
+  };
+
+  const confirmPopup = () => {
+    if (popup) {
+      onToggle(popup.seatId, popup.persons);
+      setPopup(null);
+    }
+  };
 
   const SeatBtn = ({ seatId, isUpper }) => {
     const isBooked = bookedSeats.includes(seatId);
     const isSelected = selectedSeats.includes(seatId);
-    const bg = isBooked ? "#f44336" : isSelected ? "#ffc107" : isUpper ? "#2196f3" : "#4caf50";
+    const isPopupOpen = popup?.seatId === seatId;
+    const bg = isBooked ? "#f44336" : isPopupOpen ? "#ff9800" : isSelected ? "#ffc107" : isUpper ? "#2196f3" : "#4caf50";
     return (
-      <div onClick={() => !isBooked && onToggle(seatId)} style={{
-        background: bg, color: isSelected ? "#000" : "#fff",
+      <div onClick={() => !isBooked && handleSeatClick(seatId)} style={{
+        background: bg, color: isSelected || isPopupOpen ? "#000" : "#fff",
         borderRadius: 6, padding: "10px 6px", fontSize: 12, fontWeight: 700,
         textAlign: "center", cursor: isBooked ? "not-allowed" : "pointer",
         minWidth: 52, minHeight: 40, display: "flex", alignItems: "center",
@@ -257,7 +286,57 @@ function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
   };
 
   return (
-    <div style={{ background: "#1a1a2e", borderRadius: 12, padding: 20, userSelect: "none" }}>
+    <div style={{ background: "#1a1a2e", borderRadius: 12, padding: 20, userSelect: "none", position: "relative" }}>
+
+      {/* POPUP */}
+      {popup && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center",
+          justifyContent: "center", zIndex: 1000
+        }}>
+          <div style={{
+            background: "#fff", borderRadius: 16, padding: "28px 32px",
+            textAlign: "center", boxShadow: "0 8px 32px rgba(0,0,0,0.3)", minWidth: 260
+          }}>
+            <div style={{ fontSize: 14, fontWeight: 800, color: "#1a237e", marginBottom: 6 }}>
+              Seat {popup.seatId}
+            </div>
+            <div style={{ fontSize: 12, color: "#666", marginBottom: 20 }}>
+              Kitne persons ke liye book karni hai?
+            </div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, marginBottom: 24 }}>
+              <button
+                onClick={() => setPopup(p => ({ ...p, persons: Math.max(1, p.persons - 1) }))}
+                style={{
+                  width: 40, height: 40, borderRadius: "50%", border: "2px solid #1a237e",
+                  background: "#e8eaf6", fontSize: 20, fontWeight: 900, cursor: "pointer", color: "#1a237e"
+                }}>−</button>
+              <div style={{ fontSize: 32, fontWeight: 900, color: "#1a237e", minWidth: 40 }}>{popup.persons}</div>
+              <button
+                onClick={() => setPopup(p => ({ ...p, persons: Math.min(p.maxPersons, p.persons + 1) }))}
+                style={{
+                  width: 40, height: 40, borderRadius: "50%", border: "2px solid #1a237e",
+                  background: "#e8eaf6", fontSize: 20, fontWeight: 900, cursor: "pointer", color: "#1a237e"
+                }}>+</button>
+            </div>
+            <div style={{ fontSize: 11, color: "#999", marginBottom: 20 }}>
+              Max {popup.maxPersons} person{popup.maxPersons > 1 ? "s" : ""} for this seat
+            </div>
+            <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+              <button onClick={() => setPopup(null)} style={{
+                padding: "9px 22px", borderRadius: 8, border: "2px solid #e0e0e0",
+                background: "#f5f5f5", fontSize: 13, fontWeight: 700, cursor: "pointer", color: "#555"
+              }}>Cancel</button>
+              <button onClick={confirmPopup} style={{
+                padding: "9px 22px", borderRadius: 8, border: "none",
+                background: "#1a237e", fontSize: 13, fontWeight: 700, cursor: "pointer", color: "#fff"
+              }}>✅ Confirm</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={{ display: "flex", gap: 12, marginBottom: 16, justifyContent: "center", flexWrap: "wrap" }}>
         {[["#2196f3","Upper"],["#4caf50","Lower"],["#f44336","Booked"],["#ffc107","Selected"]].map(([c,l]) => (
           <div key={l} style={{ display: "flex", alignItems: "center", gap: 5 }}>
@@ -266,6 +345,7 @@ function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
           </div>
         ))}
       </div>
+
       <div style={{ textAlign: "center", color: "#c9a84c", fontSize: 12, fontWeight: 700, marginBottom: 12 }}>🚌 DRIVER — FRONT</div>
       <div style={{ background: "#16213e", borderRadius: 8, padding: "16px 12px", border: "2px solid #c9a84c" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 30px 1fr 1fr", gap: 6, marginBottom: 10 }}>
@@ -318,13 +398,21 @@ export default function App() {
     setLoading(false);
   };
 
+  const [seatPersons, setSeatPersons] = useState({}); // { seatId: personCount }
+
   const allBookedSeats = bookings.flatMap(b => {
     try { return typeof b.selected_seats === "string" ? JSON.parse(b.selected_seats) : b.selected_seats || []; }
     catch { return []; }
   });
 
-  const toggleSeat = (seatId) => {
-    setSelectedSeats(prev => prev.includes(seatId) ? prev.filter(s => s !== seatId) : [...prev, seatId]);
+  const toggleSeat = (seatId, persons) => {
+    if (persons === 0 || selectedSeats.includes(seatId)) {
+      setSelectedSeats(prev => prev.filter(s => s !== seatId));
+      setSeatPersons(prev => { const n = {...prev}; delete n[seatId]; return n; });
+    } else {
+      setSelectedSeats(prev => [...prev, seatId]);
+      setSeatPersons(prev => ({ ...prev, [seatId]: persons }));
+    }
   };
 
   const validate = () => {
@@ -345,6 +433,7 @@ export default function App() {
     const e = validate();
     if (Object.keys(e).length > 0) { setErrors(e); return; }
     setSaving(true);
+    const totalPersons = Object.values(seatPersons).reduce((a,b) => a+b, 0);
     const record = {
       passenger_name: form.passengerName,
       ticket_no: form.ticketNo,
@@ -357,13 +446,15 @@ export default function App() {
       amount: form.amount,
       payment_mode: form.paymentMode,
       selected_seats: JSON.stringify(selectedSeats),
-      booked_at: new Date().toISOString()
+      booked_at: new Date().toISOString(),
+      total_persons: totalPersons
     };
     const { data, error } = await supabase.from("bookings").insert([record]).select();
     if (!error && data) {
-      setCurrentTicket(data[0]);
+      setCurrentTicket({ ...data[0], seatPersons });
       setBookings(prev => [data[0], ...prev]);
       setSelectedSeats([]);
+      setSeatPersons({});
       setView("ticket");
       setForm({ ...emptyForm });
       setErrors({});
@@ -459,7 +550,7 @@ export default function App() {
               {errors.seats && <div style={{ color: "#e53935", fontSize: 12, marginBottom: 10 }}>⚠️ {errors.seats}</div>}
               {selectedSeats.length > 0 && (
                 <div style={{ background: "#e8eaf6", borderRadius: 8, padding: "10px 14px", marginBottom: 14, fontSize: 13 }}>
-                  ✅ Selected: <strong>{selectedSeats.join(", ")}</strong> ({countPassengers(selectedSeats)} persons)
+                  ✅ Selected: <strong>{selectedSeats.join(", ")}</strong> — Total Persons: <strong>{Object.values(seatPersons).reduce((a,b) => a+b, 0)}</strong>
                 </div>
               )}
               <SeatMap bookedSeats={allBookedSeats} selectedSeats={selectedSeats} onToggle={toggleSeat} />
