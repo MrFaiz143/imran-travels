@@ -128,7 +128,7 @@ function TicketPrint({ booking }) {
           </div>
           <div style={{ padding: "8px 12px" }}>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>🚌 JOURNEY BY</div>
-            <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Shihori Travels</div>
+            <div style={{ fontSize: 16, fontWeight: 800, marginTop: 2, color: "#111" }}>Shihori Travels</div>
           </div>
         </div>
 
@@ -138,9 +138,8 @@ function TicketPrint({ booking }) {
         </div>
 
         {/* Footer */}
-        <div style={{ background: "#1a237e", padding: "6px 0 4px", textAlign: "center" }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#c9a84c" }}>Thanks For Connecting Imran Travels</div>
-          <div style={{ fontSize: 9, fontWeight: 600, color: "#fff", letterSpacing: 1 }}>THANKS FOR CALL IMRAN TRAVELS</div>
+        <div style={{ background: "#1a237e", padding: "8px 0", textAlign: "center" }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#c9a84c" }}>Thank you for booking with Imran Travels</div>
         </div>
       </div>
 
