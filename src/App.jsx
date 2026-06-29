@@ -60,8 +60,8 @@ function TicketPrint({ booking }) {
         <div style={{ padding: "14px 20px 10px", borderBottom: "2px solid #e8eaf6", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
             <div style={{ fontSize: 28, fontWeight: 900, color: "#1a237e" }}>IMRAN TRAVELS</div>
-            <div style={{ fontSize: 11, color: "#e53935", fontWeight: 700, marginTop: 2 }}>
-              Ticket No: <span style={{ color: "#1a237e" }}>{booking.ticket_no || "--"}</span>
+            <div style={{ fontSize: 16, color: "#e53935", fontWeight: 700, marginTop: 2 }}>
+              Ticket No: <span style={{ color: "#1a237e", fontSize: 20, fontWeight: 900 }}>{booking.ticket_no || "--"}</span>
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
@@ -192,11 +192,6 @@ function TicketPrint({ booking }) {
           </div>
         </div>
 
-        <div style={{ padding: "8px 14px", borderBottom: "1px solid #e8eaf6" }}>
-          <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>📌 PICKUP POINT</div>
-          <div style={{ fontSize: 10, fontWeight: 600, marginTop: 2 }}>{booking.pickup_point || "--"}</div>
-        </div>
-
         <div style={{ padding: "8px 14px", flex: 1 }}>
           <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
           {[
@@ -222,7 +217,8 @@ function TicketPrint({ booking }) {
 
 const emptyForm = {
   passengerName: "", ticketNo: "", busNo: "", journeyDate: "",
-  from: "", to: "", pickupPoint: "", time: "", amount: "", paymentMode: "Cash Lena He"
+  from: "", to: "", pickupPoint: "", time: "", amount: "", paymentMode: "Cash Lena He",
+  manualSeatNo: ""
 };
 
 function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
@@ -424,7 +420,7 @@ export default function App() {
     if (!form.to) e.to = "Required";
     if (!form.time.trim()) e.time = "Required";
     if (!form.amount) e.amount = "Required";
-    if (selectedSeats.length === 0) e.seats = "Please select at least one seat";
+    if (selectedSeats.length === 0 && !form.manualSeatNo.trim()) e.seats = "Please select seats from map OR enter seat no manually";
     return e;
   };
 
@@ -432,7 +428,12 @@ export default function App() {
     const e = validate();
     if (Object.keys(e).length > 0) { setErrors(e); return; }
     setSaving(true);
-    const totalPersons = Object.values(seatPersons).reduce((a,b) => a+b, 0);
+    const finalSeats = form.manualSeatNo.trim()
+      ? form.manualSeatNo.split(",").map(s => s.trim())
+      : selectedSeats;
+    const totalPersons = form.manualSeatNo.trim()
+      ? finalSeats.reduce((a, s) => a + (s.includes("-") ? 2 : 1), 0)
+      : Object.values(seatPersons).reduce((a,b) => a+b, 0);
     const record = {
       passenger_name: form.passengerName,
       ticket_no: form.ticketNo,
@@ -444,7 +445,7 @@ export default function App() {
       time: form.time,
       amount: form.amount,
       payment_mode: form.paymentMode,
-      selected_seats: JSON.stringify(selectedSeats),
+      selected_seats: JSON.stringify(finalSeats),
       booked_at: new Date().toISOString(),
       total_persons: totalPersons
     };
@@ -540,12 +541,20 @@ export default function App() {
                 {inp("amount", "AMOUNT (₹)", "number", "e.g. 800")}
                 {sel("paymentMode", "PAYMENT MODE", PAYMENT_MODES)}
               </div>
-            </div>
+              {/* Manual Seat No */}
+              <div style={{ marginTop: 14 }}>
+                <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>SEAT NO (Manual — optional, overrides seat map)</label>
+                <input
+                  type="text"
+                  value={form.manualSeatNo}
+                  placeholder="e.g. 17-18 ya A, B"
+                  onChange={e => setForm(f => ({ ...f, manualSeatNo: e.target.value }))}
+                  style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: "1.5px solid #c5cae9", outline: "none", background: "#fff9e6", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }}
+                />
+                <div style={{ fontSize: 10, color: "#888", marginTop: 3 }}>Agar manually seat no likhna ho toh yahan likho — seat map select ki zarurat nahi!</div>
+              </div>
 
             <div style={{ background: "#fff", borderRadius: 12, padding: 24, boxShadow: "0 2px 16px rgba(26,35,126,0.08)" }}>
-              <h2 style={{ color: "#1a237e", margin: "0 0 16px", fontSize: 17, fontWeight: 800, borderBottom: "2px solid #e8eaf6", paddingBottom: 10 }}>
-                🪑 Select Seats
-              </h2>
               {errors.seats && <div style={{ color: "#e53935", fontSize: 12, marginBottom: 10 }}>⚠️ {errors.seats}</div>}
               {selectedSeats.length > 0 && (
                 <div style={{ background: "#e8eaf6", borderRadius: 8, padding: "10px 14px", marginBottom: 14, fontSize: 13 }}>
