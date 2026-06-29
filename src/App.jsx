@@ -59,15 +59,15 @@ function TicketPrint({ booking }) {
         {/* Header */}
         <div style={{ padding: "14px 20px 10px", borderBottom: "2px solid #e8eaf6", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <div style={{ fontSize: 28, fontWeight: 900, color: "#1a237e" }}>IMRAN TRAVELS</div>
-            <div style={{ fontSize: 16, color: "#e53935", fontWeight: 700, marginTop: 2 }}>
+            <div style={{ fontSize: 28, fontWeight: 900, color: "#1a237e" }}>⭐ IMRAN TRAVELS ⭐</div>
+            <div style={{ fontSize: 16, color: "#e53935", fontWeight: 700, marginTop: 8 }}>
               Ticket No: <span style={{ color: "#1a237e", fontSize: 20, fontWeight: 900 }}>{booking.ticket_no || "--"}</span>
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 8, color: "#888", fontWeight: 600 }}>📞 CONTACT</div>
-            <div style={{ fontSize: 10, fontWeight: 700, color: "#333" }}>7984061265 | 9824720467</div>
-            <div style={{ fontSize: 10, fontWeight: 700, color: "#333" }}>9824151616</div>
+            <div style={{ fontSize: 9, color: "#888", fontWeight: 600 }}>📞 CONTACT</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#333" }}>7984061265 | 9824720467</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#333" }}>9824151616</div>
           </div>
         </div>
 
@@ -193,7 +193,7 @@ function TicketPrint({ booking }) {
         </div>
 
         <div style={{ padding: "8px 14px", flex: 1 }}>
-          <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
           {[
             "Surat → Aurangabad - Gevrai - Beed",
             "Surat → Malegaon - Aurangabad - Beed - Kej - Ambajogai - Latur",
@@ -201,7 +201,7 @@ function TicketPrint({ booking }) {
             "Surat → Chikli - Buldhana - Mehkar - Washim",
             "Surat → Mumbai - Pune"
           ].map((r, i) => (
-            <div key={i} style={{ fontSize: 8, color: "#333", padding: "2px 0", borderBottom: "1px dashed #e8eaf6", lineHeight: 1.4 }}>
+            <div key={i} style={{ fontSize: 10, color: "#222", fontWeight: 600, padding: "3px 0", borderBottom: "1px dashed #e8eaf6", lineHeight: 1.5 }}>
               {i + 1}. {r}
             </div>
           ))}
