@@ -553,6 +553,7 @@ export default function App() {
                 />
                 <div style={{ fontSize: 10, color: "#888", marginTop: 3 }}>Agar manually seat no likhna ho toh yahan likho — seat map select ki zarurat nahi!</div>
               </div>
+            </div>
 
             <div style={{ background: "#fff", borderRadius: 12, padding: 24, boxShadow: "0 2px 16px rgba(26,35,126,0.08)" }}>
               {errors.seats && <div style={{ color: "#e53935", fontSize: 12, marginBottom: 10 }}>⚠️ {errors.seats}</div>}
