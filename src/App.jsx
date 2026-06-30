@@ -163,8 +163,8 @@ function TicketPrint({ booking }) {
 
       {/* RIGHT SIDE */}
       <div style={{ width: 210, display: "flex", flexDirection: "column", background: "#fff" }}>
-        <div style={{ background: "#1a237e", padding: "12px 10px", textAlign: "center" }}>
-          <span style={{ fontSize: 14, fontWeight: 900, color: "#fff" }}>⭐ IMRAN TRAVELS ⭐</span>
+        <div style={{ background: "#1a237e", padding: "10px 10px", textAlign: "center" }}>
+          <span style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>⭐ IMRAN TRAVELS ⭐</span>
         </div>
 
         <div style={{ padding: "10px 14px", borderBottom: "1px solid #e8eaf6", textAlign: "center" }}>
@@ -205,8 +205,8 @@ function TicketPrint({ booking }) {
           </div>
         </div>
 
-        <div style={{ padding: "8px 14px", flex: 1 }}>
-          <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
+        <div style={{ padding: "8px 10px", flex: 1 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
           {[
             "Surat → Aurangabad - Gevrai - Beed",
             "Surat → Malegaon - Aurangabad - Beed - Kej - Ambajogai - Latur",
@@ -214,7 +214,7 @@ function TicketPrint({ booking }) {
             "Surat → Chikli - Buldhana - Mehkar - Washim",
             "Surat → Mumbai - Pune"
           ].map((r, i) => (
-            <div key={i} style={{ fontSize: 10, color: "#222", fontWeight: 600, padding: "3px 0", borderBottom: "1px dashed #e8eaf6", lineHeight: 1.5 }}>
+            <div key={i} style={{ fontSize: 8, color: "#222", fontWeight: 500, padding: "3px 0", borderBottom: "1px dashed #e8eaf6", lineHeight: 1.5 }}>
               {i + 1}. {r}
             </div>
           ))}
