@@ -209,7 +209,7 @@ function TicketPrint({ booking }) {
           <div style={{ fontSize: 11, fontWeight: 650, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
           {[
             "Surat → Aurangabad - Gevrai - Beed",
-            "Surat → Malegaon - Aurangabad - Beed - Kej - Ambajogai - Latur",
+            "Surat → Malegaon - Aurangabad - Beed - Kej - Ambajogai - Latur - Jalna",
             "Surat → Jalna",
             "Surat → Chikli - Buldhana - Mehkar - Washim",
             "Surat → Mumbai - Pune"
@@ -221,7 +221,7 @@ function TicketPrint({ booking }) {
         </div>
 
         <div style={{ background: "#1a237e", padding: "8px", textAlign: "center" }}>
-          <div style={{ fontSize: 8, color: "#c9a84c", fontWeight: 700 }}>HAVE A SAFE JOURNEY!</div>
+          <div style={{ fontSize: 9, color: "#c9a84c", fontWeight: 700 }}>HAVE A SAFE JOURNEY!</div>
         </div>
       </div>
     </div>
