@@ -76,8 +76,8 @@ function TicketPrint({ booking }) {
           </div>
           <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📞 CONTACT</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>7984061265 | 9824151616 |9824720467</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>9824151616</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>7984061265 | 9824151616 | 9824720467</div>
+            {/* <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>9824151616</div> */}
           </div>
         </div>
 
