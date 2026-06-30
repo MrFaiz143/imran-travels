@@ -22,7 +22,17 @@ const PICKUP_POINTS = [
   "Kadodra Nilam Hotel",
   "Palsana Sabar Hotel",
   "Navsari",
-  "Chikhli"
+  "Chikhli",
+  "Khaja Complex Parking",
+  "Hirapur",
+  "Padalsinghi",
+  "Gadi Fhata",
+  "Gevrai Zamzam By Pass",
+  "Shahagad",
+  "Pachod",
+  "Aurangabad",
+  "Gangapur",
+  "Nashik"
 ];
 
 function formatDate(dateStr) {
