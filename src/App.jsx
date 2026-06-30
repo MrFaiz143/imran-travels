@@ -57,44 +57,49 @@ function TicketPrint({ booking }) {
       {/* LEFT SIDE */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
         {/* Header */}
-        <div style={{ padding: "14px 20px 10px", borderBottom: "2px solid #e8eaf6", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div style={{ padding: "14px 20px 12px", borderBottom: "2px solid #e8eaf6", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
             <div style={{ fontSize: 28, fontWeight: 900, color: "#1a237e" }}>⭐ IMRAN TRAVELS ⭐</div>
-            <div style={{ fontSize: 16, color: "#e53935", fontWeight: 700, marginTop: 8 }}>
-              Ticket No: <span style={{ color: "#1a237e", fontSize: 20, fontWeight: 900 }}>{booking.ticket_no || "--"}</span>
+            <div style={{ fontSize: 18, color: "#1a237e", fontWeight: 900, marginTop: 10 }}>
+              Ticket No: {booking.ticket_no || "--"}
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 9, color: "#888", fontWeight: 600 }}>📞 CONTACT</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#333" }}>7984061265 | 9824720467</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#333" }}>9824151616</div>
+            <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📞 CONTACT</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>7984061265 | 9824720467</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>9824151616</div>
           </div>
         </div>
 
         {/* Row 1 */}
         <div style={{ display: "grid", gridTemplateColumns: "1.4fr 0.8fr 0.7fr 1.1fr", borderBottom: "1px solid #e8eaf6" }}>
-          {[
-            { label: "1. PASSENGER NAME", value: booking.passenger_name },
-            { label: "2. BUS NO", value: booking.bus_no },
-            { label: "3. TOTAL PERSONS", value: booking.total_persons || countPassengers(seats) },
-            { label: "4. SEAT NO", value: formatSeats(seats) },
-          ].map((f, i) => (
-            <div key={i} style={{ padding: "8px 12px", borderRight: i < 3 ? "1px solid #e8eaf6" : "none" }}>
-              <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>{f.label}</div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#111", marginTop: 3 }}>{f.value || "--"}</div>
-            </div>
-          ))}
+          <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
+            <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>1. PASSENGER NAME</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#1a237e", marginTop: 3 }}>{booking.passenger_name || "--"}</div>
+          </div>
+          <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
+            <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>2. BUS NO</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#1a237e", marginTop: 3 }}>{booking.bus_no || "--"}</div>
+          </div>
+          <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
+            <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>3. TOTAL PERSONS</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#1a237e", marginTop: 3 }}>{booking.total_persons || "--"}</div>
+          </div>
+          <div style={{ padding: "8px 12px" }}>
+            <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>4. SEAT NO</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#1a237e", marginTop: 3 }}>{formatSeats(seats)}</div>
+          </div>
         </div>
 
         {/* Row 2 */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>5. JOURNEY DATE</div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#111", marginTop: 3 }}>{formatDate(booking.journey_date)}</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#1a237e", marginTop: 3 }}>{formatDate(booking.journey_date)}</div>
           </div>
           <div style={{ padding: "8px 12px" }}>
             <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>6. AMOUNT</div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#111", marginTop: 3 }}>₹{booking.amount || "--"}</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#1a237e", marginTop: 3 }}>₹{booking.amount || "--"}</div>
           </div>
         </div>
 
@@ -149,9 +154,7 @@ function TicketPrint({ booking }) {
       {/* RIGHT SIDE */}
       <div style={{ width: 210, display: "flex", flexDirection: "column", background: "#fff" }}>
         <div style={{ background: "#1a237e", padding: "12px 10px", textAlign: "center" }}>
-          <span style={{ color: "#c9a84c", fontSize: 14 }}>★</span>
-          <span style={{ fontSize: 14, fontWeight: 900, color: "#fff", margin: "0 6px" }}>IMRAN TRAVELS</span>
-          <span style={{ color: "#c9a84c", fontSize: 14 }}>★</span>
+          <span style={{ fontSize: 16, fontWeight: 900, color: "#fff" }}>⭐ IMRAN TRAVELS ⭐</span>
         </div>
 
         <div style={{ padding: "10px 14px", borderBottom: "1px solid #e8eaf6", textAlign: "center" }}>
@@ -218,7 +221,7 @@ function TicketPrint({ booking }) {
 const emptyForm = {
   passengerName: "", ticketNo: "", busNo: "", journeyDate: "",
   from: "", to: "", pickupPoint: "", time: "", amount: "", paymentMode: "Cash Lena He",
-  manualSeatNo: ""
+  manualSeatNo: "", totalPersons: ""
 };
 
 function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
@@ -421,6 +424,7 @@ export default function App() {
     if (!form.time.trim()) e.time = "Required";
     if (!form.amount) e.amount = "Required";
     if (!form.manualSeatNo.trim()) e.seats = "Seat No likhna zaroori hai";
+    if (!form.totalPersons) e.totalPersons = "Total Persons likhna zaroori hai";
     return e;
   };
 
@@ -429,7 +433,7 @@ export default function App() {
     if (Object.keys(e).length > 0) { setErrors(e); return; }
     setSaving(true);
     const finalSeats = form.manualSeatNo.split(",").map(s => s.trim());
-    const totalPersons = finalSeats.reduce((a, s) => a + (s.includes("-") ? 2 : 1), 0);
+    const totalPersons = parseInt(form.totalPersons) || finalSeats.reduce((a, s) => a + (s.includes("-") ? 2 : 1), 0);
     const record = {
       passenger_name: form.passengerName,
       ticket_no: form.ticketNo,
@@ -548,6 +552,18 @@ export default function App() {
                   style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: errors.seats ? "1.5px solid #e53935" : "1.5px solid #c5cae9", outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }}
                 />
                 {errors.seats && <span style={{ fontSize: 10, color: "#e53935" }}>{errors.seats}</span>}
+              </div>
+              {/* Total Persons Manual */}
+              <div style={{ marginTop: 14 }}>
+                <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>TOTAL PERSONS *</label>
+                <input
+                  type="number"
+                  value={form.totalPersons}
+                  placeholder="e.g. 1, 2, 3"
+                  onChange={e => { setForm(f => ({ ...f, totalPersons: e.target.value })); setErrors(er => ({ ...er, totalPersons: "" })); }}
+                  style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: errors.totalPersons ? "1.5px solid #e53935" : "1.5px solid #c5cae9", outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }}
+                />
+                {errors.totalPersons && <span style={{ fontSize: 10, color: "#e53935" }}>{errors.totalPersons}</span>}
               </div>
             </div>
 
