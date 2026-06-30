@@ -164,7 +164,7 @@ function TicketPrint({ booking }) {
       {/* RIGHT SIDE */}
       <div style={{ width: 210, display: "flex", flexDirection: "column", background: "#fff" }}>
         <div style={{ background: "#1a237e", padding: "12px 10px", textAlign: "center" }}>
-          <span style={{ fontSize: 16, fontWeight: 900, color: "#fff" }}>⭐ IMRAN TRAVELS ⭐</span>
+          <span style={{ fontSize: 14, fontWeight: 900, color: "#fff" }}>⭐ IMRAN TRAVELS ⭐</span>
         </div>
 
         <div style={{ padding: "10px 14px", borderBottom: "1px solid #e8eaf6", textAlign: "center" }}>
@@ -206,7 +206,7 @@ function TicketPrint({ booking }) {
         </div>
 
         <div style={{ padding: "8px 14px", flex: 1 }}>
-          <div style={{ fontSize: 5, fontWeight: 700, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
           {[
             "Surat → Aurangabad - Gevrai - Beed",
             "Surat → Malegaon - Aurangabad - Beed - Kej - Ambajogai - Latur",
