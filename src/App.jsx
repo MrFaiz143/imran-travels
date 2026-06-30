@@ -206,7 +206,7 @@ function TicketPrint({ booking }) {
         </div>
 
         <div style={{ padding: "8px 10px", flex: 1 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
+          <div style={{ fontSize: 11, fontWeight: 650, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
           {[
             "Surat → Aurangabad - Gevrai - Beed",
             "Surat → Malegaon - Aurangabad - Beed - Kej - Ambajogai - Latur",
