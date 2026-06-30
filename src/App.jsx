@@ -214,7 +214,7 @@ function TicketPrint({ booking }) {
             "Surat → Chikli - Buldhana - Mehkar - Washim",
             "Surat → Mumbai - Pune"
           ].map((r, i) => (
-            <div key={i} style={{ fontSize: 8, color: "#222", fontWeight: 500, padding: "3px 0", borderBottom: "1px dashed #e8eaf6", lineHeight: 1.5 }}>
+            <div key={i} style={{ fontSize: 10, color: "#222", fontWeight: 550, padding: "3px 0", borderBottom: "1px dashed #e8eaf6", lineHeight: 1.5 }}>
               {i + 1}. {r}
             </div>
           ))}
