@@ -69,7 +69,7 @@ function TicketPrint({ booking }) {
         {/* Header */}
         <div style={{ padding: "14px 20px 12px", borderBottom: "2px solid #e8eaf6", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <div style={{ fontSize: 28, fontWeight: 900, color: "#1a237e" }}>⭐ IMRAN TRAVELS ⭐</div>
+            <div style={{ fontSize: 20, fontWeight: 600, color: "#1a237e" }}>⭐ IMRAN TRAVELS ⭐</div>
             <div style={{ fontSize: 18, color: "#1a237e", fontWeight: 900, marginTop: 10 }}>
               Ticket No: {booking.ticket_no || "--"}
             </div>
