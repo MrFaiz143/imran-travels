@@ -69,15 +69,15 @@ function TicketPrint({ booking }) {
         {/* Header */}
         <div style={{ padding: "14px 20px 12px", borderBottom: "2px solid #e8eaf6", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <div style={{ fontSize: 28, fontWeight: 900, color: "#1a237e" }}>⭐ IMRAN TRAVELS ⭐</div>
-            <div style={{ fontSize: 18, color: "#1a237e", fontWeight: 900, marginTop: 10 }}>
+            <div style={{ fontSize: 26, fontWeight: 850, color: "#1a237e" }}>⭐ IMRAN TRAVELS ⭐</div>
+            <div style={{ fontSize: 16, color: "#1a237e", fontWeight: 850, marginTop: 10 }}>
               Ticket No: {booking.ticket_no || "--"}
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📞 CONTACT</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>7984061265 | 9824720467</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>9824151616</div>
+            <div style={{ fontSize: 10, color: "#1a237e", fontWeight: 700 }}>📞 CONTACT</div>
+            <div style={{ fontSize: 11, fontWeight: 650, color: "#1a237e" }}>7984061265 | 9824720467 | 9824151616</div>
+            {/* <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>9824151616</div> */}
           </div>
         </div>
 
