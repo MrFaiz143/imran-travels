@@ -27,7 +27,7 @@ const PICKUP_POINTS = [
   "Hirapur",
   "Padalsinghi",
   "Gadi Fhata",
-  "Gevrai Zamzam By Pass",
+  "Gevrai Zamzam Bypass",
   "Shahagad",
   "Pachod",
   "Aurangabad",
@@ -69,15 +69,15 @@ function TicketPrint({ booking }) {
         {/* Header */}
         <div style={{ padding: "14px 20px 12px", borderBottom: "2px solid #e8eaf6", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 600, color: "#1a237e" }}>⭐ IMRAN TRAVELS ⭐</div>
+            <div style={{ fontSize: 28, fontWeight: 900, color: "#1a237e" }}>⭐ IMRAN TRAVELS ⭐</div>
             <div style={{ fontSize: 18, color: "#1a237e", fontWeight: 900, marginTop: 10 }}>
               Ticket No: {booking.ticket_no || "--"}
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📞 CONTACT</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>7984061265 | 9824151616 | 9824720467</div>
-            {/* <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>9824151616</div> */}
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>7984061265 | 9824720467</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>9824151616</div>
           </div>
         </div>
 
@@ -163,8 +163,8 @@ function TicketPrint({ booking }) {
 
       {/* RIGHT SIDE */}
       <div style={{ width: 210, display: "flex", flexDirection: "column", background: "#fff" }}>
-        <div style={{ background: "#1a237e", padding: "10px 10px", textAlign: "center" }}>
-          <span style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>⭐ IMRAN TRAVELS ⭐</span>
+        <div style={{ background: "#1a237e", padding: "12px 10px", textAlign: "center" }}>
+          <span style={{ fontSize: 16, fontWeight: 900, color: "#fff" }}>⭐ IMRAN TRAVELS ⭐</span>
         </div>
 
         <div style={{ padding: "10px 14px", borderBottom: "1px solid #e8eaf6", textAlign: "center" }}>
@@ -205,23 +205,23 @@ function TicketPrint({ booking }) {
           </div>
         </div>
 
-        <div style={{ padding: "8px 10px", flex: 1 }}>
-          <div style={{ fontSize: 11, fontWeight: 650, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
+        <div style={{ padding: "8px 14px", flex: 1 }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
           {[
             "Surat → Aurangabad - Gevrai - Beed",
-            "Surat → Malegaon - Aurangabad - Beed - Kej - Ambajogai - Latur - Jalna",
-            "Surat → Jalna",
+            "Surat → Malegaon - Kej - Ambajogai - Latur",
+            // "Surat → Jalna",
             "Surat → Chikli - Buldhana - Mehkar - Washim",
             "Surat → Mumbai - Pune"
           ].map((r, i) => (
-            <div key={i} style={{ fontSize: 9, color: "#222", fontWeight: 550, padding: "3px 0", borderBottom: "1px dashed #e8eaf6", lineHeight: 1.5 }}>
+            <div key={i} style={{ fontSize: 10, color: "#222", fontWeight: 600, padding: "3px 0", borderBottom: "1px dashed #e8eaf6", lineHeight: 1.5 }}>
               {i + 1}. {r}
             </div>
           ))}
         </div>
 
         <div style={{ background: "#1a237e", padding: "8px", textAlign: "center" }}>
-          <div style={{ fontSize: 9, color: "#c9a84c", fontWeight: 700 }}>HAVE A SAFE JOURNEY!</div>
+          <div style={{ fontSize: 8, color: "#c9a84c", fontWeight: 700 }}>HAVE A SAFE JOURNEY!</div>
         </div>
       </div>
     </div>
@@ -385,13 +385,13 @@ export default function App() {
   const [form, setForm] = useState({ ...emptyForm });
   const [errors, setErrors] = useState({});
   const [selectedSeats, setSelectedSeats] = useState([]);
+  const [seatPersons, setSeatPersons] = useState({});
   const [bookings, setBookings] = useState([]);
   const [currentTicket, setCurrentTicket] = useState(null);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Load bookings from Supabase
   useEffect(() => {
     loadBookings();
   }, []);
@@ -405,8 +405,6 @@ export default function App() {
     if (!error && data) setBookings(data);
     setLoading(false);
   };
-
-  const [seatPersons, setSeatPersons] = useState({}); // { seatId: personCount }
 
   const allBookedSeats = bookings.flatMap(b => {
     try { return typeof b.selected_seats === "string" ? JSON.parse(b.selected_seats) : b.selected_seats || []; }
