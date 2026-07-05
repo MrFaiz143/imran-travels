@@ -195,7 +195,7 @@ function TicketPrint({ booking }) {
         <div style={{ padding: "8px 14px", flex: 1 }}>
           <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
           {[
-            "Surat → Aurangabad - Gevrai - Beed",
+            "Surat → Aurangabad - Gevrai - Jalna Beed",
             "Surat → Malegaon - Aurangabad - Beed - Kej - Ambajogai - Latur",
             // "Surat → Jalna",
             "Surat → Chikli - Buldhana - Mehkar - Washim",
