@@ -173,7 +173,7 @@ function TicketPrint({ booking }) {
       {/* RIGHT SIDE */}
       <div style={{ width: 210, display: "flex", flexDirection: "column", background: "#fff" }}>
         <div style={{ background: "#1a237e", padding: "12px 10px", textAlign: "center" }}>
-          <span style={{ fontSize: 15, fontWeight: 850, color: "#fff" }}>⭐ IMRAN TRAVELS ⭐</span>
+          <span style={{ fontSize: 14, fontWeight: 800, color: "#fff" }}>⭐ IMRAN TRAVELS ⭐</span>
         </div>
 
         <div style={{ padding: "10px 14px", borderBottom: "1px solid #e8eaf6", textAlign: "center" }}>
