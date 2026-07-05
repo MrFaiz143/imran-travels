@@ -192,21 +192,6 @@ function TicketPrint({ booking }) {
           </div>
         </div>
 
-        <div style={{ padding: "8px 14px", flex: 1 }}>
-          <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
-          {[
-            "Surat → Aurangabad - Gevrai - Jalna Beed",
-            "Surat → Malegaon - Aurangabad - Beed - Kej - Ambajogai - Latur",
-            // "Surat → Jalna",
-            "Surat → Chikli - Buldhana - Mehkar - Washim",
-            "Surat → Mumbai - Pune"
-          ].map((r, i) => (
-            <div key={i} style={{ fontSize: 8, color: "#333", padding: "2px 0", borderBottom: "1px dashed #e8eaf6", lineHeight: 1.4 }}>
-              {i + 1}. {r}
-            </div>
-          ))}
-        </div>
-
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 10px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>JOURNEY DATE</div>
