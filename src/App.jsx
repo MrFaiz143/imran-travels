@@ -69,15 +69,15 @@ function TicketPrint({ booking }) {
         {/* Header */}
         <div style={{ padding: "14px 20px 12px", borderBottom: "2px solid #e8eaf6", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <div style={{ fontSize: 26, fontWeight: 850, color: "#1a237e" }}>⭐ IMRAN TRAVELS ⭐</div>
-            <div style={{ fontSize: 16, color: "#1a237e", fontWeight: 850, marginTop: 10 }}>
+            <div style={{ fontSize: 28, fontWeight: 900, color: "#1a237e" }}>⭐ IMRAN TRAVELS ⭐</div>
+            <div style={{ fontSize: 18, color: "#1a237e", fontWeight: 900, marginTop: 10 }}>
               Ticket No: {booking.ticket_no || "--"}
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 10, color: "#1a237e", fontWeight: 700 }}>📞 CONTACT</div>
-            <div style={{ fontSize: 11, fontWeight: 650, color: "#1a237e" }}>7984061265 | 9824720467 | 9824151616</div>
-            {/* <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>9824151616</div> */}
+            <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📞 CONTACT</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>7984061265 | 9824720467</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>9824151616</div>
           </div>
         </div>
 
@@ -164,7 +164,7 @@ function TicketPrint({ booking }) {
       {/* RIGHT SIDE */}
       <div style={{ width: 210, display: "flex", flexDirection: "column", background: "#fff" }}>
         <div style={{ background: "#1a237e", padding: "12px 10px", textAlign: "center" }}>
-          <span style={{ fontSize: 12, fontWeight: 750, color: "#fff" }}>⭐ IMRAN TRAVELS ⭐</span>
+          <span style={{ fontSize: 16, fontWeight: 900, color: "#fff" }}>⭐ IMRAN TRAVELS ⭐</span>
         </div>
 
         <div style={{ padding: "10px 14px", borderBottom: "1px solid #e8eaf6", textAlign: "center" }}>
@@ -206,18 +206,6 @@ function TicketPrint({ booking }) {
         </div>
 
         <div style={{ padding: "8px 14px", flex: 1 }}>
-          <div style={{ fontSize: 9, fontWeight: 600, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
-          {[
-            "Surat → Aurangabad - Gevrai - Beed",
-            "Surat → Malegaon - Kej - Ambajogai - Latur",
-            // "Surat → Jalna",
-            "Surat → Chikli - Buldhana - Mehkar - Washim",
-            "Surat → Mumbai - Pune"
-          ].map((r, i) => (
-            <div key={i} style={{ fontSize: 9, color: "#222", fontWeight: 600, padding: "3px 0", borderBottom: "1px dashed #e8eaf6", lineHeight: 1.5 }}>
-              {i + 1}. {r}
-            </div>
-          ))}
         </div>
 
         <div style={{ background: "#1a237e", padding: "8px", textAlign: "center" }}>
@@ -472,6 +460,31 @@ export default function App() {
     setSaving(false);
   };
 
+  const handleShare = async () => {
+    const element = document.getElementById("ticket-print");
+    const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [canvas.width / 2, canvas.height / 2] });
+    pdf.addImage(imgData, "PNG", 0, 0, canvas.width / 2, canvas.height / 2);
+    const pdfBlob = pdf.output("blob");
+    const file = new File([pdfBlob], `Ticket-${currentTicket.ticket_no}.pdf`, { type: "application/pdf" });
+    if (navigator.share && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          title: `Imran Travels - Ticket ${currentTicket.ticket_no}`,
+          text: `🎫 Ticket No: ${currentTicket.ticket_no}\n👤 ${currentTicket.passenger_name}\n📍 ${currentTicket.from_city} → ${currentTicket.to_city}\n📅 ${formatDate(currentTicket.journey_date)}`,
+          files: [file]
+        });
+      } catch (err) {
+        console.log("Share cancelled");
+      }
+    } else {
+      // Fallback - download if share not supported
+      pdf.save(`Ticket-${currentTicket.ticket_no}.pdf`);
+      alert("Sharing not supported on this device. PDF downloaded instead!");
+    }
+  };
+
   const handlePrint = async () => {
     const element = document.getElementById("ticket-print");
     const canvas = await html2canvas(element, { scale: 2, useCORS: true });
@@ -591,7 +604,8 @@ export default function App() {
               <h2 style={{ color: "#1a237e", margin: 0, fontWeight: 800 }}>✅ Ticket Generated!</h2>
               <div style={{ display: "flex", gap: 10 }}>
                 <button onClick={() => setView("form")} style={{ padding: "9px 20px", background: "#e8eaf6", color: "#1a237e", borderRadius: 8, fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer" }}>+ New Booking</button>
-                <button onClick={handlePrint} style={{ padding: "9px 20px", background: "#1a237e", color: "#fff", borderRadius: 8, fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer" }}>🖨️ Print / Download PDF</button>
+                <button onClick={handlePrint} style={{ padding: "9px 20px", background: "#1a237e", color: "#fff", borderRadius: 8, fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer" }}>🖨️ Download PDF</button>
+                <button onClick={handleShare} style={{ padding: "9px 20px", background: "#25D366", color: "#fff", borderRadius: 8, fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer" }}>📤 Share PDF</button>
               </div>
             </div>
             <div style={{ overflowX: "auto" }}>
