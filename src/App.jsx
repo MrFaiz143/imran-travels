@@ -12,7 +12,8 @@ const DESTINATIONS = [
   "Solapur", "Parbhani", "Nanded", "Mumbai", "Pune", "Ahmednagar",
   "Bhiwandi", "Nagpur", "Ahmedabad", "Amravati", "Akola", "Chikli",
   "Buldhana", "Washim", "Mehkar", "Jalgaon", "Bhusawal", "Jaipur",
-  "Ajmer", "Bangalore", "Hyderabad", "Malegaon", "Kej", "Ambajogai"
+  "Ajmer", "Bangalore", "Hyderabad", "Malegaon", "kaij", "Ambajogai",
+  "Baroda","Bharuch","Ankleshwar","Manjar sumba"
 ];
 
 const PAYMENT_MODES = ["Cash Lena He", "Online"];
@@ -32,6 +33,14 @@ const PICKUP_POINTS = [
   "Pachod",
   "Aurangabad",
   "Gangapur",
+  "kaij",
+  "Ahmedabad",
+  "Baroda",
+  "Bharuch",
+  "Ankleshawr",
+  "Manjar sumba",
+  "Ambajogai",
+  "Latur",
   "Nashik"
 ];
 
