@@ -177,7 +177,7 @@ function TicketPrint({ booking }) {
         </div>
 
         <div style={{ padding: "10px 14px", borderBottom: "1px solid #e8eaf6", textAlign: "center" }}>
-          <div style={{ fontSize: 8, fontWeight: 650, color: "#1a237e", marginBottom: 4 }}>PASSENGER NAME</div>
+          <div style={{ fontSize: 8, fontWeight: 650, color: "#1a237e", marginBottom: 3 }}>PASSENGER NAME</div>
           <div style={{ fontSize: 16, fontWeight: 900, color: "#1a237e" }}>{booking.passenger_name || "--"}</div>
         </div>
 
