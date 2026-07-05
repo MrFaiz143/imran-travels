@@ -214,7 +214,7 @@ function TicketPrint({ booking }) {
           </div>
         </div>
 
-        <div style={{ padding: "8px 14px", flex: 1 }}>
+        <div style={{ padding: "8px 12px", flex: 1 }}>
           <div style={{ fontSize: 9, fontWeight: 650, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
           {[
             "Surat → Aurangabad - Gevrai - Jalna Beed",
