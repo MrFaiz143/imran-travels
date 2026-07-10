@@ -7,9 +7,6 @@ const SUPABASE_URL = "https://zushqnhlpuipxtwrtzrl.supabase.co";
 const SUPABASE_KEY = "sb_publishable_KRQXcNmugL-T6M_PZowRlA_WiwQGH3X";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const VALID_USERNAME = "Imran_Chaus";
-const VALID_PASSWORD = "Imr98@n2Chaus";
-
 const DESTINATIONS = [
   "Surat", "Nashik", "Aurangabad", "Gevrai", "Beed", "Jalna", "Latur",
   "Solapur", "Parbhani", "Nanded", "Mumbai", "Pune", "Ahmednagar",
@@ -396,90 +393,6 @@ function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
 }
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => sessionStorage.getItem("imran_auth") === "true");
-  const [loginForm, setLoginForm] = useState({ username: "", password: "" });
-  const [loginError, setLoginError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleLogin = () => {
-    if (loginForm.username === VALID_USERNAME && loginForm.password === VALID_PASSWORD) {
-      sessionStorage.setItem("imran_auth", "true");
-      setIsLoggedIn(true);
-      setLoginError("");
-    } else {
-      setLoginError("❌ Galat Username ya Password!");
-    }
-  };
-
-  const handleLogout = () => {
-    sessionStorage.removeItem("imran_auth");
-    setIsLoggedIn(false);
-    setLoginForm({ username: "", password: "" });
-  };
-
-  if (!isLoggedIn) {
-    return (
-      <div style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #1a237e 0%, #283593 50%, #1565c0 100%)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        fontFamily: "Arial, sans-serif"
-      }}>
-        <div style={{
-          background: "#fff", borderRadius: 20, padding: "40px 36px", width: 380,
-          boxShadow: "0 20px 60px rgba(0,0,0,0.3)", textAlign: "center"
-        }}>
-          <div style={{ marginBottom: 20 }}>
-            <div style={{ fontSize: 26, fontWeight: 900, color: "#1a237e" }}>⭐ IMRAN TRAVELS ⭐</div>
-            <div style={{ fontSize: 11, color: "#888", letterSpacing: 2, fontWeight: 600, marginTop: 4 }}>BOOKING MANAGEMENT SYSTEM</div>
-          </div>
-          <hr style={{ border: "none", borderTop: "2px solid #e8eaf6", margin: "0 0 20px" }} />
-          <div style={{ fontSize: 16, fontWeight: 800, color: "#1a237e", marginBottom: 20 }}>🔐 Agent Login</div>
-
-          <div style={{ marginBottom: 14, textAlign: "left" }}>
-            <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e", display: "block", marginBottom: 5 }}>USERNAME</label>
-            <input
-              type="text" value={loginForm.username} placeholder="Enter username"
-              onChange={e => { setLoginForm(f => ({ ...f, username: e.target.value })); setLoginError(""); }}
-              onKeyDown={e => e.key === "Enter" && handleLogin()}
-              style={{ width: "100%", padding: "11px 14px", borderRadius: 8, fontSize: 14, border: "1.5px solid #c5cae9", outline: "none", boxSizing: "border-box", background: "#f8f9ff" }}
-            />
-          </div>
-
-          <div style={{ marginBottom: 20, textAlign: "left" }}>
-            <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e", display: "block", marginBottom: 5 }}>PASSWORD</label>
-            <div style={{ position: "relative" }}>
-              <input
-                type={showPassword ? "text" : "password"} value={loginForm.password} placeholder="Enter password"
-                onChange={e => { setLoginForm(f => ({ ...f, password: e.target.value })); setLoginError(""); }}
-                onKeyDown={e => e.key === "Enter" && handleLogin()}
-                style={{ width: "100%", padding: "11px 44px 11px 14px", borderRadius: 8, fontSize: 14, border: "1.5px solid #c5cae9", outline: "none", boxSizing: "border-box", background: "#f8f9ff" }}
-              />
-              <button onClick={() => setShowPassword(p => !p)} style={{
-                position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)",
-                background: "none", border: "none", cursor: "pointer", fontSize: 18, color: "#888"
-              }}>{showPassword ? "🙈" : "👁️"}</button>
-            </div>
-          </div>
-
-          {loginError && (
-            <div style={{ background: "#ffebee", color: "#c62828", padding: "10px 14px", borderRadius: 8, fontSize: 13, marginBottom: 16, fontWeight: 600 }}>
-              {loginError}
-            </div>
-          )}
-
-          <button onClick={handleLogin} style={{
-            width: "100%", padding: "12px", background: "#1a237e", color: "#fff",
-            borderRadius: 8, fontSize: 15, fontWeight: 700, border: "none", cursor: "pointer",
-            boxShadow: "0 4px 12px rgba(26,35,126,0.3)"
-          }}>🚀 LOGIN</button>
-
-          <div style={{ marginTop: 20, fontSize: 11, color: "#aaa" }}>Imran Travels © 2026</div>
-        </div>
-      </div>
-    );
-  }
-
   const [view, setView] = useState("form");
   const [form, setForm] = useState({ ...emptyForm });
   const [errors, setErrors] = useState({});
@@ -644,17 +557,13 @@ export default function App() {
           <span style={{ color: "#c9a84c" }}>★</span>
           <div style={{ color: "#c5cae9", fontSize: 10, letterSpacing: 2, marginTop: 2 }}>BOOKING MANAGEMENT SYSTEM</div>
         </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 8 }}>
           {[{ key: "form", label: "📝 NEW BOOKING" }, { key: "records", label: "📋 RECORDS" }].map(v => (
             <button key={v.key} onClick={() => { setView(v.key); if(v.key==="records") loadBookings(); }} style={{
               padding: "7px 18px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer",
               border: "2px solid #c9a84c", background: view === v.key ? "#c9a84c" : "transparent", color: view === v.key ? "#1a237e" : "#c9a84c"
             }}>{v.label}</button>
           ))}
-          <button onClick={handleLogout} style={{
-            padding: "7px 14px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer",
-            border: "2px solid #ef5350", background: "transparent", color: "#ef5350"
-          }}>🚪 Logout</button>
         </div>
       </div>
 
