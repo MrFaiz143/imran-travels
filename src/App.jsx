@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { createClient } from "@supabase/supabase-js";
-import Login from "./Login";  // <--- NEW: Login import
+import Login from "./Login";
 
-const SUPABASE_URL = "https://zushqnhlpuipxtwrtzrl.supabase.co";
-const SUPABASE_KEY = "sb_publishable_KRQXcNmugL-T6M_PZowRlA_WiwQGH3X";
+// ---- FIX: Supabase Config with fallback ----
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://zushqnhlpuipxtwrtzrl.supabase.co";
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY || "sb_publishable_KRQXcNmugL-T6M_PZowRlA_WiwQGH3X";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+// ---- FIX END ----
 
 const DESTINATIONS = [
   "Surat", "Nashik", "Aurangabad", "Gevrai", "Beed", "Jalna", "Latur",
@@ -387,15 +389,15 @@ function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
 }
 
 export default function App() {
-  // ---- NEW: Login State ----
+  // ---- Login State ----
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // ---- NEW: Login Check ----
+  // ---- Login Check ----
   if (!isLoggedIn) {
     return <Login onLogin={setIsLoggedIn} />;
   }
 
-  // ---- EXISTING CODE (kuch change nahi) ----
+  // ---- EXISTING CODE ----
   const [view, setView] = useState("form");
   const [form, setForm] = useState({ ...emptyForm });
   const [errors, setErrors] = useState({});
@@ -566,7 +568,6 @@ export default function App() {
               border: "2px solid #c9a84c", background: view === v.key ? "#c9a84c" : "transparent", color: view === v.key ? "#1a237e" : "#c9a84c"
             }}>{v.label}</button>
           ))}
-          {/* NEW: Logout Button */}
           <button onClick={() => setIsLoggedIn(false)} style={{
             padding: "7px 18px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer",
             border: "2px solid #e53935", background: "transparent", color: "#e53935"
