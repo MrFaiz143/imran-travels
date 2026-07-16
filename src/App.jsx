@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { createClient } from "@supabase/supabase-js";
+import Login from "./Login";  // <--- NEW: Login import
 
 const SUPABASE_URL = "https://zushqnhlpuipxtwrtzrl.supabase.co";
 const SUPABASE_KEY = "sb_publishable_KRQXcNmugL-T6M_PZowRlA_WiwQGH3X";
@@ -86,7 +87,6 @@ function TicketPrint({ booking }) {
           <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📞 CONTACT</div>
             <div style={{ fontSize: 12, fontWeight: 700, color: "#1a237e" }}>7984061265 | 982451516116 | 9824720467</div>
-            {/* <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>9824151616</div> */}
           </div>
         </div>
 
@@ -219,7 +219,6 @@ function TicketPrint({ booking }) {
           {[
             "Surat → Aurangabad - Gevrai - Jalna Beed",
             "Surat → Malegaon - Aurangabad - Beed - Kej - Ambajogai - Latur",
-            // "Surat → Jalna",
             "Surat → Chikli - Buldhana - Mehkar - Washim",
             "Surat → Mumbai - Pune"
           ].map((r, i) => (
@@ -256,7 +255,7 @@ function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
     { leftUpper: "K", leftLower: "L", rightLower: "21-22", rightUpper: "23-24" },
   ];
 
-  const [popup, setPopup] = useState(null); // { seatId, persons, maxPersons }
+  const [popup, setPopup] = useState(null);
   const totalSeats = 24;
   const available = totalSeats - bookedSeats.length - selectedSeats.length;
 
@@ -265,17 +264,14 @@ function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
 
   const handleSeatClick = (seatId) => {
     if (bookedSeats.includes(seatId)) return;
-    // If already selected — deselect karo
     if (selectedSeats.includes(seatId)) {
       onToggle(seatId, 0);
       return;
     }
-    // Single seat — seedha 1 person set karo, no popup
     if (!isDouble(seatId)) {
       onToggle(seatId, 1);
       return;
     }
-    // Double seat — popup dikhao
     setPopup({ seatId, persons: 1, maxPersons: maxPersons(seatId) });
   };
 
@@ -307,8 +303,6 @@ function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
 
   return (
     <div style={{ background: "#1a1a2e", borderRadius: 12, padding: 20, userSelect: "none", position: "relative" }}>
-
-      {/* POPUP */}
       {popup && (
         <div style={{
           position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
@@ -393,6 +387,15 @@ function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
 }
 
 export default function App() {
+  // ---- NEW: Login State ----
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // ---- NEW: Login Check ----
+  if (!isLoggedIn) {
+    return <Login onLogin={setIsLoggedIn} />;
+  }
+
+  // ---- EXISTING CODE (kuch change nahi) ----
   const [view, setView] = useState("form");
   const [form, setForm] = useState({ ...emptyForm });
   const [errors, setErrors] = useState({});
@@ -503,7 +506,6 @@ export default function App() {
         console.log("Share cancelled");
       }
     } else {
-      // Fallback - download if share not supported
       pdf.save(`Ticket-${currentTicket.ticket_no}.pdf`);
       alert("Sharing not supported on this device. PDF downloaded instead!");
     }
@@ -557,13 +559,18 @@ export default function App() {
           <span style={{ color: "#c9a84c" }}>★</span>
           <div style={{ color: "#c5cae9", fontSize: 10, letterSpacing: 2, marginTop: 2 }}>BOOKING MANAGEMENT SYSTEM</div>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           {[{ key: "form", label: "📝 NEW BOOKING" }, { key: "records", label: "📋 RECORDS" }].map(v => (
             <button key={v.key} onClick={() => { setView(v.key); if(v.key==="records") loadBookings(); }} style={{
               padding: "7px 18px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer",
               border: "2px solid #c9a84c", background: view === v.key ? "#c9a84c" : "transparent", color: view === v.key ? "#1a237e" : "#c9a84c"
             }}>{v.label}</button>
           ))}
+          {/* NEW: Logout Button */}
+          <button onClick={() => setIsLoggedIn(false)} style={{
+            padding: "7px 18px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer",
+            border: "2px solid #e53935", background: "transparent", color: "#e53935"
+          }}>🚪 Logout</button>
         </div>
       </div>
 
@@ -586,7 +593,6 @@ export default function App() {
                 {inp("amount", "AMOUNT (₹)", "number", "e.g. 800")}
                 {sel("paymentMode", "PAYMENT MODE", PAYMENT_MODES)}
               </div>
-              {/* Manual Seat No */}
               <div style={{ marginTop: 14 }}>
                 <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>SEAT NO *</label>
                 <input
@@ -598,7 +604,6 @@ export default function App() {
                 />
                 {errors.seats && <span style={{ fontSize: 10, color: "#e53935" }}>{errors.seats}</span>}
               </div>
-              {/* Total Persons Manual */}
               <div style={{ marginTop: 14 }}>
                 <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>TOTAL PERSONS *</label>
                 <input
