@@ -41,6 +41,8 @@ const PICKUP_POINTS = [
   "Manjar sumba",
   "Ambajogai",
   "Latur",
+  "Aurangabad Mandir",
+  "Waluj",
   "Nashik"
 ];
 
