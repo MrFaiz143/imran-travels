@@ -409,7 +409,7 @@ export default function App() {
 
   const handleShare = async () => {
     const element = document.getElementById("ticket-print");
-    const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+    const canvas = await html2canvas(element, { scale: 1, useCORS: true });
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [canvas.width / 2, canvas.height / 2] });
     pdf.addImage(imgData, "PNG", 0, 0, canvas.width / 2, canvas.height / 2);
@@ -433,7 +433,7 @@ export default function App() {
 
   const handlePrint = async () => {
     const element = document.getElementById("ticket-print");
-    const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+    const canvas = await html2canvas(element, { scale: 1, useCORS: true });
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [canvas.width / 2, canvas.height / 2] });
     pdf.addImage(imgData, "PNG", 0, 0, canvas.width / 2, canvas.height / 2);
