@@ -6,6 +6,8 @@ import { createClient } from "@supabase/supabase-js";
 const SUPABASE_URL = "https://zushqnhlpuipxtwrtzrl.supabase.co";
 const SUPABASE_KEY = "sb_publishable_KRQXcNmugL-T6M_PZowRlA_WiwQGH3X";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const VALID_USERNAME = "Imran_Chaus";
+const VALID_PASSWORD = "Imran@467";
 
 const DESTINATIONS = [
   "Surat", "Nashik", "Aurangabad", "Gevrai", "Beed", "Jalna", "Latur",
@@ -64,6 +66,82 @@ function countPassengers(seats) {
   return arr.reduce((total, seat) => total + (seat.includes("-") ? 2 : 1), 0);
 }
 
+function LoginPage({ onLogin }) {
+  const [loginForm, setLoginForm] = useState({ username: "", password: "" });
+  const [loginError, setLoginError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = () => {
+    if (loginForm.username === VALID_USERNAME && loginForm.password === VALID_PASSWORD) {
+      sessionStorage.setItem("imran_auth", "true");
+      onLogin();
+    } else {
+      setLoginError("❌ Galat Username ya Password!");
+    }
+  };
+
+  return (
+    <div style={{
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #1a237e 0%, #283593 50%, #1565c0 100%)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      fontFamily: "Arial, sans-serif"
+    }}>
+      <div style={{
+        background: "#fff", borderRadius: 20, padding: "40px 36px", width: 380,
+        boxShadow: "0 20px 60px rgba(0,0,0,0.3)", textAlign: "center"
+      }}>
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ fontSize: 26, fontWeight: 900, color: "#1a237e" }}>⭐ IMRAN TRAVELS ⭐</div>
+          <div style={{ fontSize: 11, color: "#888", letterSpacing: 2, fontWeight: 600, marginTop: 4 }}>BOOKING MANAGEMENT SYSTEM</div>
+        </div>
+        <hr style={{ border: "none", borderTop: "2px solid #e8eaf6", margin: "0 0 20px" }} />
+        <div style={{ fontSize: 16, fontWeight: 800, color: "#1a237e", marginBottom: 20 }}>🔐 Agent Login</div>
+
+        <div style={{ marginBottom: 14, textAlign: "left" }}>
+          <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e", display: "block", marginBottom: 5 }}>USERNAME</label>
+          <input
+            type="text" value={loginForm.username} placeholder="Enter username"
+            onChange={e => { setLoginForm(f => ({ ...f, username: e.target.value })); setLoginError(""); }}
+            onKeyDown={e => e.key === "Enter" && handleLogin()}
+            style={{ width: "100%", padding: "11px 14px", borderRadius: 8, fontSize: 14, border: "1.5px solid #c5cae9", outline: "none", boxSizing: "border-box", background: "#f8f9ff", color: "#222" }}
+          />
+        </div>
+
+        <div style={{ marginBottom: 20, textAlign: "left" }}>
+          <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e", display: "block", marginBottom: 5 }}>PASSWORD</label>
+          <div style={{ position: "relative" }}>
+            <input
+              type={showPassword ? "text" : "password"} value={loginForm.password} placeholder="Enter password"
+              onChange={e => { setLoginForm(f => ({ ...f, password: e.target.value })); setLoginError(""); }}
+              onKeyDown={e => e.key === "Enter" && handleLogin()}
+              style={{ width: "100%", padding: "11px 44px 11px 14px", borderRadius: 8, fontSize: 14, border: "1.5px solid #c5cae9", outline: "none", boxSizing: "border-box", background: "#f8f9ff", color: "#222" }}
+            />
+            <button onClick={() => setShowPassword(p => !p)} style={{
+              position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)",
+              background: "none", border: "none", cursor: "pointer", fontSize: 18, color: "#888"
+            }}>{showPassword ? "🙈" : "👁️"}</button>
+          </div>
+        </div>
+
+        {loginError && (
+          <div style={{ background: "#ffebee", color: "#c62828", padding: "10px 14px", borderRadius: 8, fontSize: 13, marginBottom: 16, fontWeight: 600 }}>
+            {loginError}
+          </div>
+        )}
+
+        <button onClick={handleLogin} style={{
+          width: "100%", padding: "12px", background: "#1a237e", color: "#fff",
+          borderRadius: 8, fontSize: 15, fontWeight: 700, border: "none", cursor: "pointer",
+          boxShadow: "0 4px 12px rgba(26,35,126,0.3)"
+        }}>🚀 LOGIN</button>
+
+        <div style={{ marginTop: 20, fontSize: 11, color: "#aaa" }}>Imran Travels © 2026</div>
+      </div>
+    </div>
+  );
+}
+
 function TicketPrint({ booking }) {
   const seats = typeof booking.selected_seats === "string"
     ? JSON.parse(booking.selected_seats)
@@ -75,9 +153,7 @@ function TicketPrint({ booking }) {
       display: "flex", border: "2px solid #1a237e", borderRadius: 8,
       overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.15)"
     }}>
-      {/* LEFT SIDE */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        {/* Header */}
         <div style={{ padding: "14px 20px 12px", borderBottom: "2px solid #e8eaf6", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
             <div style={{ fontSize: 24, fontWeight: 850, color: "#1a237e" }}>⭐ IMRAN TRAVELS ⭐</div>
@@ -87,12 +163,10 @@ function TicketPrint({ booking }) {
           </div>
           <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📞 CONTACT</div>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "#1a237e" }}>7984061265 | 982451516116 | 9824720467</div>
-            {/* <div style={{ fontSize: 13, fontWeight: 700, color: "#1a237e" }}>9824151616</div> */}
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#1a237e" }}>7984061265 | 9824151616 | 9824720467</div>
           </div>
         </div>
 
-        {/* Row 1 */}
         <div style={{ display: "grid", gridTemplateColumns: "1.4fr 0.8fr 0.7fr 1.1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>1. PASSENGER NAME</div>
@@ -112,7 +186,6 @@ function TicketPrint({ booking }) {
           </div>
         </div>
 
-        {/* Row 2 */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>5. JOURNEY DATE</div>
@@ -124,7 +197,6 @@ function TicketPrint({ booking }) {
           </div>
         </div>
 
-        {/* Row 3 */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📍 FROM</div>
@@ -146,7 +218,6 @@ function TicketPrint({ booking }) {
           </div>
         </div>
 
-        {/* Row 4 */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📌 PICKUP POINT</div>
@@ -158,31 +229,25 @@ function TicketPrint({ booking }) {
           </div>
         </div>
 
-        {/* Return Ticket */}
         <div style={{ padding: "10px 20px", borderBottom: "1px solid #e8eaf6", textAlign: "center" }}>
           <span style={{ fontSize: 16, fontWeight: 900, color: "#111" }}>Return Ticket Available.</span>
         </div>
 
-        {/* Footer */}
         <div style={{ background: "#1a237e", padding: "8px 0", textAlign: "center" }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: "#c9a84c" }}>Thank you for booking with Imran Travels</div>
         </div>
       </div>
 
-      {/* DIVIDER */}
       <div style={{ width: 1, background: "repeating-linear-gradient(to bottom, #1a237e 0px, #1a237e 8px, transparent 8px, transparent 14px)" }} />
 
-      {/* RIGHT SIDE */}
       <div style={{ width: 210, display: "flex", flexDirection: "column", background: "#fff" }}>
         <div style={{ background: "#1a237e", padding: "12px 10px", textAlign: "center" }}>
           <span style={{ fontSize: 12, fontWeight: 800, color: "#fff" }}>⭐ IMRAN TRAVELS ⭐</span>
         </div>
-
         <div style={{ padding: "10px 14px", borderBottom: "1px solid #e8eaf6", textAlign: "center" }}>
           <div style={{ fontSize: 8, fontWeight: 650, color: "#1a237e", marginBottom: 3 }}>PASSENGER NAME</div>
           <div style={{ fontSize: 16, fontWeight: 900, color: "#1a237e" }}>{booking.passenger_name || "--"}</div>
         </div>
-
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 10px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>BUS NO</div>
@@ -193,7 +258,6 @@ function TicketPrint({ booking }) {
             <div style={{ fontSize: 11, fontWeight: 700, marginTop: 2 }}>{formatSeats(seats)}</div>
           </div>
         </div>
-
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 10px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>JOURNEY DATE</div>
@@ -204,7 +268,6 @@ function TicketPrint({ booking }) {
             <div style={{ fontSize: 12, fontWeight: 700, marginTop: 2 }}>{booking.to_city || "--"}</div>
           </div>
         </div>
-
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 10px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>TOTAL PERSONS</div>
@@ -215,13 +278,11 @@ function TicketPrint({ booking }) {
             <div style={{ fontSize: 15, fontWeight: 700, marginTop: 2 }}>₹{booking.amount || "--"}</div>
           </div>
         </div>
-
         <div style={{ padding: "8px 12px", flex: 1 }}>
           <div style={{ fontSize: 9, fontWeight: 650, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
           {[
             "Surat → Aurangabad - Gevrai - Jalna Beed",
             "Surat → Malegaon - Aurangabad - Beed - Kej - Ambajogai - Latur",
-            // "Surat → Jalna",
             "Surat → Chikli - Buldhana - Mehkar - Washim",
             "Surat → Mumbai - Pune"
           ].map((r, i) => (
@@ -230,10 +291,6 @@ function TicketPrint({ booking }) {
             </div>
           ))}
         </div>
-
-        <div style={{ padding: "8px 14px", flex: 1 }}>
-        </div>
-
         <div style={{ background: "#1a237e", padding: "8px", textAlign: "center" }}>
           <div style={{ fontSize: 8, color: "#c9a84c", fontWeight: 700 }}>HAVE A SAFE JOURNEY!</div>
         </div>
@@ -248,153 +305,8 @@ const emptyForm = {
   manualSeatNo: "", totalPersons: ""
 };
 
-function SeatMap({ bookedSeats, selectedSeats, onToggle }) {
-  const SHIHORI_ROWS = [
-    { leftUpper: "B", leftLower: "A", rightLower: "3-4",   rightUpper: "1-2"   },
-    { leftUpper: "C", leftLower: "D", rightLower: "5-6",   rightUpper: "7-8"   },
-    { leftUpper: "F", leftLower: "E", rightLower: "11-12", rightUpper: "9-10"  },
-    { leftUpper: "G", leftLower: "H", rightLower: "13-14", rightUpper: "15-16" },
-    { leftUpper: "J", leftLower: "I", rightLower: "19-20", rightUpper: "17-18" },
-    { leftUpper: "K", leftLower: "L", rightLower: "21-22", rightUpper: "23-24" },
-  ];
-
-  const [popup, setPopup] = useState(null); // { seatId, persons, maxPersons }
-  const totalSeats = 24;
-  const available = totalSeats - bookedSeats.length - selectedSeats.length;
-
-  const isDouble = (seatId) => seatId.includes("-");
-  const maxPersons = (seatId) => isDouble(seatId) ? 2 : 1;
-
-  const handleSeatClick = (seatId) => {
-    if (bookedSeats.includes(seatId)) return;
-    // If already selected — deselect karo
-    if (selectedSeats.includes(seatId)) {
-      onToggle(seatId, 0);
-      return;
-    }
-    // Single seat — seedha 1 person set karo, no popup
-    if (!isDouble(seatId)) {
-      onToggle(seatId, 1);
-      return;
-    }
-    // Double seat — popup dikhao
-    setPopup({ seatId, persons: 1, maxPersons: maxPersons(seatId) });
-  };
-
-  const confirmPopup = () => {
-    if (popup) {
-      onToggle(popup.seatId, popup.persons);
-      setPopup(null);
-    }
-  };
-
-  const SeatBtn = ({ seatId, isUpper }) => {
-    const isBooked = bookedSeats.includes(seatId);
-    const isSelected = selectedSeats.includes(seatId);
-    const isPopupOpen = popup?.seatId === seatId;
-    const bg = isBooked ? "#f44336" : isPopupOpen ? "#ff9800" : isSelected ? "#ffc107" : isUpper ? "#2196f3" : "#4caf50";
-    return (
-      <div onClick={() => !isBooked && handleSeatClick(seatId)} style={{
-        background: bg, color: isSelected || isPopupOpen ? "#000" : "#fff",
-        borderRadius: 6, padding: "10px 6px", fontSize: 12, fontWeight: 700,
-        textAlign: "center", cursor: isBooked ? "not-allowed" : "pointer",
-        minWidth: 52, minHeight: 40, display: "flex", alignItems: "center",
-        justifyContent: "center", opacity: isBooked ? 0.6 : 1,
-        boxShadow: isSelected ? "0 0 8px #ffc107" : "0 2px 4px rgba(0,0,0,0.3)"
-      }}>
-        {seatId}
-      </div>
-    );
-  };
-
-  return (
-    <div style={{ background: "#1a1a2e", borderRadius: 12, padding: 20, userSelect: "none", position: "relative" }}>
-
-      {/* POPUP */}
-      {popup && (
-        <div style={{
-          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-          background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center",
-          justifyContent: "center", zIndex: 1000
-        }}>
-          <div style={{
-            background: "#fff", borderRadius: 16, padding: "28px 32px",
-            textAlign: "center", boxShadow: "0 8px 32px rgba(0,0,0,0.3)", minWidth: 260
-          }}>
-            <div style={{ fontSize: 14, fontWeight: 800, color: "#1a237e", marginBottom: 6 }}>
-              Seat {popup.seatId}
-            </div>
-            <div style={{ fontSize: 12, color: "#666", marginBottom: 20 }}>
-              Kitne persons ke liye book karni hai?
-            </div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, marginBottom: 24 }}>
-              <button
-                onClick={() => setPopup(p => ({ ...p, persons: Math.max(1, p.persons - 1) }))}
-                style={{
-                  width: 40, height: 40, borderRadius: "50%", border: "2px solid #1a237e",
-                  background: "#e8eaf6", fontSize: 20, fontWeight: 900, cursor: "pointer", color: "#1a237e"
-                }}>−</button>
-              <div style={{ fontSize: 32, fontWeight: 900, color: "#1a237e", minWidth: 40 }}>{popup.persons}</div>
-              <button
-                onClick={() => setPopup(p => ({ ...p, persons: Math.min(p.maxPersons, p.persons + 1) }))}
-                style={{
-                  width: 40, height: 40, borderRadius: "50%", border: "2px solid #1a237e",
-                  background: "#e8eaf6", fontSize: 20, fontWeight: 900, cursor: "pointer", color: "#1a237e"
-                }}>+</button>
-            </div>
-            <div style={{ fontSize: 11, color: "#999", marginBottom: 20 }}>
-              Max {popup.maxPersons} person{popup.maxPersons > 1 ? "s" : ""} for this seat
-            </div>
-            <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
-              <button onClick={() => setPopup(null)} style={{
-                padding: "9px 22px", borderRadius: 8, border: "2px solid #e0e0e0",
-                background: "#f5f5f5", fontSize: 13, fontWeight: 700, cursor: "pointer", color: "#555"
-              }}>Cancel</button>
-              <button onClick={confirmPopup} style={{
-                padding: "9px 22px", borderRadius: 8, border: "none",
-                background: "#1a237e", fontSize: 13, fontWeight: 700, cursor: "pointer", color: "#fff"
-              }}>✅ Confirm</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div style={{ display: "flex", gap: 12, marginBottom: 16, justifyContent: "center", flexWrap: "wrap" }}>
-        {[["#2196f3","Upper"],["#4caf50","Lower"],["#f44336","Booked"],["#ffc107","Selected"]].map(([c,l]) => (
-          <div key={l} style={{ display: "flex", alignItems: "center", gap: 5 }}>
-            <div style={{ width: 14, height: 14, background: c, borderRadius: 3 }} />
-            <span style={{ color: "#fff", fontSize: 10 }}>{l}</span>
-          </div>
-        ))}
-      </div>
-
-      <div style={{ textAlign: "center", color: "#c9a84c", fontSize: 12, fontWeight: 700, marginBottom: 12 }}>🚌 DRIVER — FRONT</div>
-      <div style={{ background: "#16213e", borderRadius: 8, padding: "16px 12px", border: "2px solid #c9a84c" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 30px 1fr 1fr", gap: 6, marginBottom: 10 }}>
-          {["UPPER","LOWER","","LOWER","UPPER"].map((h,i) => (
-            <div key={i} style={{ textAlign: "center", color: i===0||i===4?"#2196f3":i===1||i===3?"#4caf50":"transparent", fontSize: 10, fontWeight: 700 }}>{h}</div>
-          ))}
-        </div>
-        {SHIHORI_ROWS.map((row, i) => (
-          <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 30px 1fr 1fr", gap: 6, marginBottom: 8 }}>
-            <SeatBtn seatId={row.leftUpper} isUpper={true} />
-            <SeatBtn seatId={row.leftLower} isUpper={false} />
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <div style={{ width: 2, background: "#333", minHeight: 40 }} />
-            </div>
-            <SeatBtn seatId={row.rightLower} isUpper={false} />
-            <SeatBtn seatId={row.rightUpper} isUpper={true} />
-          </div>
-        ))}
-      </div>
-      <div style={{ textAlign: "center", color: "#9fa8da", fontSize: 11, marginTop: 12 }}>
-        Total: {totalSeats} | Available: {available} | Selected: {selectedSeats.length} seats ({countPassengers(selectedSeats)} persons)
-      </div>
-    </div>
-  );
-}
-
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(() => sessionStorage.getItem("imran_auth") === "true");
   const [view, setView] = useState("form");
   const [form, setForm] = useState({ ...emptyForm });
   const [errors, setErrors] = useState({});
@@ -407,8 +319,8 @@ export default function App() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    loadBookings();
-  }, []);
+    if (isLoggedIn) loadBookings();
+  }, [isLoggedIn]);
 
   const loadBookings = async () => {
     setLoading(true);
@@ -419,6 +331,15 @@ export default function App() {
     if (!error && data) setBookings(data);
     setLoading(false);
   };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("imran_auth");
+    setIsLoggedIn(false);
+  };
+
+  if (!isLoggedIn) {
+    return <LoginPage onLogin={() => setIsLoggedIn(true)} />;
+  }
 
   const allBookedSeats = bookings.flatMap(b => {
     try { return typeof b.selected_seats === "string" ? JSON.parse(b.selected_seats) : b.selected_seats || []; }
@@ -505,7 +426,6 @@ export default function App() {
         console.log("Share cancelled");
       }
     } else {
-      // Fallback - download if share not supported
       pdf.save(`Ticket-${currentTicket.ticket_no}.pdf`);
       alert("Sharing not supported on this device. PDF downloaded instead!");
     }
@@ -559,13 +479,17 @@ export default function App() {
           <span style={{ color: "#c9a84c" }}>★</span>
           <div style={{ color: "#c5cae9", fontSize: 10, letterSpacing: 2, marginTop: 2 }}>BOOKING MANAGEMENT SYSTEM</div>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           {[{ key: "form", label: "📝 NEW BOOKING" }, { key: "records", label: "📋 RECORDS" }].map(v => (
             <button key={v.key} onClick={() => { setView(v.key); if(v.key==="records") loadBookings(); }} style={{
               padding: "7px 18px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer",
               border: "2px solid #c9a84c", background: view === v.key ? "#c9a84c" : "transparent", color: view === v.key ? "#1a237e" : "#c9a84c"
             }}>{v.label}</button>
           ))}
+          <button onClick={handleLogout} style={{
+            padding: "7px 14px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer",
+            border: "2px solid #ef5350", background: "transparent", color: "#ef5350"
+          }}>🚪 Logout</button>
         </div>
       </div>
 
@@ -588,25 +512,17 @@ export default function App() {
                 {inp("amount", "AMOUNT (₹)", "number", "e.g. 800")}
                 {sel("paymentMode", "PAYMENT MODE", PAYMENT_MODES)}
               </div>
-              {/* Manual Seat No */}
               <div style={{ marginTop: 14 }}>
                 <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>SEAT NO *</label>
-                <input
-                  type="text"
-                  value={form.manualSeatNo}
-                  placeholder="e.g. 17-18 ya A, B, 3-4"
+                <input type="text" value={form.manualSeatNo} placeholder="e.g. 17-18 ya A, B, 3-4"
                   onChange={e => { setForm(f => ({ ...f, manualSeatNo: e.target.value })); setErrors(er => ({ ...er, seats: "" })); }}
                   style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: errors.seats ? "1.5px solid #e53935" : "1.5px solid #c5cae9", outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }}
                 />
                 {errors.seats && <span style={{ fontSize: 10, color: "#e53935" }}>{errors.seats}</span>}
               </div>
-              {/* Total Persons Manual */}
               <div style={{ marginTop: 14 }}>
                 <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>TOTAL PERSONS *</label>
-                <input
-                  type="number"
-                  value={form.totalPersons}
-                  placeholder="e.g. 1, 2, 3"
+                <input type="number" value={form.totalPersons} placeholder="e.g. 1, 2, 3"
                   onChange={e => { setForm(f => ({ ...f, totalPersons: e.target.value })); setErrors(er => ({ ...er, totalPersons: "" })); }}
                   style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: errors.totalPersons ? "1.5px solid #e53935" : "1.5px solid #c5cae9", outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }}
                 />
@@ -672,7 +588,7 @@ export default function App() {
                           <td style={{ padding: "8px" }}>{b.to_city}</td>
                           <td style={{ padding: "8px" }}>{formatDate(b.journey_date)}</td>
                           <td style={{ padding: "8px" }}>{b.bus_no}</td>
-                          <td style={{ padding: "8px", textAlign: "center" }}>{countPassengers(seats)}</td>
+                          <td style={{ padding: "8px", textAlign: "center" }}>{b.total_persons || countPassengers(seats)}</td>
                           <td style={{ padding: "8px", fontSize: 10 }}>{seats.join(", ")}</td>
                           <td style={{ padding: "8px", fontWeight: 700 }}>₹{b.amount}</td>
                           <td style={{ padding: "8px" }}>{b.payment_mode}</td>
