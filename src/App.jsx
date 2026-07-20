@@ -289,7 +289,7 @@ function TicketPrint({ booking }) {
             "Surat → Chikli - Buldhana - Mehkar - Washim",
             "Surat → Mumbai - Pune - Ahemdabad, Baroda - Bharuch",
             "Surat → Akola - Amravati - Yavatmal - Nagpur",
-            "Surat → Jaipur - Rajasthan - Ajmer -Bangalore - Hyderabad",
+            "Rajasthan - Ajmer -Bangalore - Hyderabad",
           ].map((r, i) => (
             <div key={i} style={{ fontSize: 9, color: "#333", padding: "2px 0", borderBottom: "1px dashed #e8eaf6", lineHeight: 1.4 }}>
               {i + 1}. {r}
