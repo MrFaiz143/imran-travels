@@ -157,7 +157,7 @@ function TicketPrint({ booking }) {
         <div style={{ padding: "14px 20px 12px", borderBottom: "2px solid #e8eaf6", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
             <div style={{ fontSize: 24, fontWeight: 850, color: "#1a237e" }}>⭐ IMRAN TRAVELS ⭐</div>
-            <div style={{ fontSize: 18, color: "#1a237e", fontWeight: 900, marginTop: 10 }}>
+            <div style={{ fontSize: 18, color: "#e20a0a", fontWeight: 900, marginTop: 10 }}>
               Ticket No: {booking.ticket_no || "--"}
             </div>
           </div>
@@ -174,7 +174,7 @@ function TicketPrint({ booking }) {
           </div>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>2. BUS NO</div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#1a237e", marginTop: 3 }}>{booking.bus_no || "--"}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#c62828", marginTop: 3 }}>{booking.bus_no || "--"}</div>
           </div>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>3. TOTAL PERSONS</div>
@@ -225,12 +225,15 @@ function TicketPrint({ booking }) {
           </div>
           <div style={{ padding: "8px 12px" }}>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>🚌 JOURNEY BY</div>
-            <div style={{ fontSize: 16, fontWeight: 800, marginTop: 2, color: "#111" }}>Shihori Travels</div>
+            <div style={{ fontSize: 18, fontWeight: 800, marginTop: 2, color: "#c62828" }}>Shihori Travels</div>
           </div>
         </div>
 
         <div style={{ padding: "10px 20px", borderBottom: "1px solid #e8eaf6", textAlign: "center" }}>
-          <span style={{ fontSize: 16, fontWeight: 900, color: "#111" }}>Return Ticket Available.</span>
+          <h2 style={{ fontSize: 25, fontWeight: 700, color: "#1a237e", marginTop: 6 }}>Terms & Conditions</h2>
+          <p style={{ fontSize: 15, color: "#555",textAlign: "left", marginTop: 4 }}><b>1. Bus operators are not responsible for any Damage or luggage and commercial Goods.</b></p>
+          <p style={{ fontSize: 15, color: "#555", textAlign: "left", marginTop: 4 }}><b>2. Management will not responsible for any injury to passengers and damage to their property due to accident of any oher case.</b></p>
+          <p style={{ fontSize: 15, color: "#555", textAlign: "left", marginTop: 4 }}><b>3. The agency will not be responsible for any loss of passenger's property.</b></p>
         </div>
 
         <div style={{ background: "#1a237e", padding: "8px 0", textAlign: "center" }}>
@@ -270,7 +273,7 @@ function TicketPrint({ booking }) {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 10px", borderRight: "1px solid #e8eaf6" }}>
-            <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>TOTAL PERSONS</div>
+            <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>TOTAL SEAT</div>
             <div style={{ fontSize: 15, fontWeight: 700, marginTop: 2 }}>{booking.total_persons || countPassengers(seats) || "--"}</div>
           </div>
           <div style={{ padding: "8px 10px" }}>
@@ -279,25 +282,31 @@ function TicketPrint({ booking }) {
           </div>
         </div>
         <div style={{ padding: "8px 12px", flex: 1 }}>
-          <div style={{ fontSize: 9, fontWeight: 650, color: "#1a237e", marginBottom: 5 }}>🚌 OUR ROUTES</div>
+          <div style={{ fontSize: 19, fontWeight: 650, color: "#1a237e", marginBottom: 8 }}>🚌 OUR ROUTES</div>
           {[
-            "Surat → Aurangabad - Gevrai - Jalna Beed",
+            "Surat → Gevrai - Jalna ",
             "Surat → Malegaon - Aurangabad - Beed - Kej - Ambajogai - Latur",
             "Surat → Chikli - Buldhana - Mehkar - Washim",
-            "Surat → Mumbai - Pune"
+            "Surat → Mumbai - Pune - Ahemdabad, Baroda - Bharuch",
+            "Surat → Akola - Amravati - Yavatmal - Nagpur",
+            "Surat → Jaipur - Rajasthan - Ajmer -Bangalore - Hyderabad",
           ].map((r, i) => (
             <div key={i} style={{ fontSize: 9, color: "#333", padding: "2px 0", borderBottom: "1px dashed #e8eaf6", lineHeight: 1.4 }}>
               {i + 1}. {r}
             </div>
           ))}
+          
+          <h2 style={{ fontSize: 20, fontWeight: 900, color: "#120988", textAlign: "center", marginTop: 50 }}>Return Ticket Available.</h2>
         </div>
         <div style={{ background: "#1a237e", padding: "8px", textAlign: "center" }}>
-          <div style={{ fontSize: 8, color: "#c9a84c", fontWeight: 700 }}>HAVE A SAFE JOURNEY!</div>
+          <div style={{ fontSize: 10, color: "#c9a84c", fontWeight: 700 }}>HAVE A SAFE JOURNEY!</div>
         </div>
       </div>
     </div>
   );
 }
+
+
 
 const emptyForm = {
   passengerName: "", ticketNo: "", busNo: "", journeyDate: "",
