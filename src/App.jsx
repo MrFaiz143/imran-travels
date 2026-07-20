@@ -231,9 +231,9 @@ function TicketPrint({ booking }) {
 
         <div style={{ padding: "10px 20px", borderBottom: "1px solid #e8eaf6", textAlign: "center" }}>
           <h2 style={{ fontSize: 25, fontWeight: 700, color: "#1a237e", marginTop: 6 }}>Terms & Conditions</h2>
-          <p style={{ fontSize: 12, color: "#555",textAlign: "left", marginTop: 4 }}><b>1. Bus operators are not responsible for any Damage or luggage and commercial Goods.</b></p>
-          <p style={{ fontSize: 12, color: "#555", textAlign: "left", marginTop: 4 }}><b>2. Management will not responsible for any injury to passengers and damage to their property due to accident of any oher case.</b></p>
-          <p style={{ fontSize: 12, color: "#555", textAlign: "left", marginTop: 4 }}><b>3. The agency will not be responsible for any loss of passenger's property.</b></p>
+          <p style={{ fontSize: 15, color: "#555",textAlign: "left", marginTop: 4 }}><b>1. Bus operators are not responsible for any Damage or luggage and commercial Goods.</b></p>
+          <p style={{ fontSize: 15, color: "#555", textAlign: "left", marginTop: 4 }}><b>2. Management will not responsible for any injury to passengers and damage to their property due to accident of any oher case.</b></p>
+          <p style={{ fontSize: 15, color: "#555", textAlign: "left", marginTop: 4 }}><b>3. The agency will not be responsible for any loss of passenger's property.</b></p>
         </div>
 
         <div style={{ background: "#1a237e", padding: "8px 0", textAlign: "center" }}>
