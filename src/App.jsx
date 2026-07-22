@@ -157,7 +157,7 @@ function TicketPrint({ booking }) {
         <div style={{ padding: "14px 20px 12px", borderBottom: "2px solid #e8eaf6", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
             <div style={{ fontSize: 24, fontWeight: 850, color: "#1a237e" }}>⭐ IMRAN TRAVELS ⭐</div>
-            <div style={{ fontSize: 18, color: "#e20a0a", fontWeight: 900, marginTop: 10 }}>
+            <div style={{ fontSize: 18, color: "#e53935", fontWeight: 900, marginTop: 10 }}>
               Ticket No: {booking.ticket_no || "--"}
             </div>
           </div>
@@ -189,7 +189,7 @@ function TicketPrint({ booking }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>5. JOURNEY DATE</div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#1a237e", marginTop: 3 }}>{formatDate(booking.journey_date)}</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#e53935", marginTop: 3 }}>{formatDate(booking.journey_date)}</div>
           </div>
           <div style={{ padding: "8px 12px" }}>
             <div style={{ fontSize: 9, fontWeight: 700, color: "#1a237e" }}>6. AMOUNT</div>
@@ -200,15 +200,15 @@ function TicketPrint({ booking }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📍 FROM</div>
-            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{booking.from_city || "--"}</div>
+            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2, color: "#e53935" }}>{booking.from_city || "--"}</div>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700, marginTop: 5 }}>📍 TO</div>
-            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{booking.to_city || "--"}</div>
+            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2, color: "#e53935" }}>{booking.to_city || "--"}</div>
           </div>
           <div style={{ padding: "8px 12px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>📅 DATE</div>
-            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{formatDate(booking.journey_date)}</div>
+            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2, color: "#e53935" }}>{formatDate(booking.journey_date)}</div>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700, marginTop: 5 }}>⏰ TIME</div>
-            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{booking.time || "--"}</div>
+            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2, color: "#e53935" }}>{booking.time || "--"}</div>
           </div>
           <div style={{ padding: "8px 12px" }}>
             <div style={{ fontSize: 9, color: "#1a237e", fontWeight: 700 }}>👤 BOOKING BY</div>
@@ -243,6 +243,7 @@ function TicketPrint({ booking }) {
 
       <div style={{ width: 1, background: "repeating-linear-gradient(to bottom, #1a237e 0px, #1a237e 8px, transparent 8px, transparent 14px)" }} />
 
+      {/* SIDEBAR - RIGHT SIDE */}
       <div style={{ width: 210, display: "flex", flexDirection: "column", background: "#fff" }}>
         <div style={{ background: "#1a237e", padding: "12px 10px", textAlign: "center" }}>
           <span style={{ fontSize: 12, fontWeight: 800, color: "#fff" }}>⭐ IMRAN TRAVELS ⭐</span>
@@ -254,7 +255,8 @@ function TicketPrint({ booking }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 10px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>BUS NO</div>
-            <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2 }}>{booking.bus_no || "--"}</div>
+            {/* SIDEBAR BUS NO - RED */}
+            <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2, color: "#e53935" }}>{booking.bus_no || "--"}</div>
           </div>
           <div style={{ padding: "8px 10px" }}>
             <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>SEAT NO</div>
@@ -264,11 +266,11 @@ function TicketPrint({ booking }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 10px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>JOURNEY DATE</div>
-            <div style={{ fontSize: 11, fontWeight: 700, marginTop: 2 }}>{formatDate(booking.journey_date)}</div>
+            <div style={{ fontSize: 11, fontWeight: 700, marginTop: 2, color: "#e53935" }}>{formatDate(booking.journey_date)}</div>
           </div>
           <div style={{ padding: "8px 10px" }}>
             <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>JOURNEY</div>
-            <div style={{ fontSize: 12, fontWeight: 700, marginTop: 2 }}>{booking.to_city || "--"}</div>
+            <div style={{ fontSize: 12, fontWeight: 700, marginTop: 2, color: "#e53935" }}>{booking.to_city || "--"}</div>
           </div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
@@ -591,11 +593,11 @@ export default function App() {
                       const seats = typeof b.selected_seats === "string" ? JSON.parse(b.selected_seats) : b.selected_seats || [];
                       return (
                         <tr key={i} style={{ borderBottom: "1px solid #e8eaf6", background: i % 2 === 0 ? "#fff" : "#f8f9ff" }}>
-                          <td style={{ padding: "8px", fontWeight: 700, color: "#3949ab", fontSize: 10 }}>{b.ticket_no}</td>
+                          <td style={{ padding: "8px", fontWeight: 700, color: "#e53935", fontSize: 10 }}>{b.ticket_no}</td>
                           <td style={{ padding: "8px" }}>{b.passenger_name}</td>
-                          <td style={{ padding: "8px" }}>{b.from_city}</td>
-                          <td style={{ padding: "8px" }}>{b.to_city}</td>
-                          <td style={{ padding: "8px" }}>{formatDate(b.journey_date)}</td>
+                          <td style={{ padding: "8px", color: "#e53935", fontWeight: 600 }}>{b.from_city}</td>
+                          <td style={{ padding: "8px", color: "#e53935", fontWeight: 600 }}>{b.to_city}</td>
+                          <td style={{ padding: "8px", color: "#e53935", fontWeight: 600 }}>{formatDate(b.journey_date)}</td>
                           <td style={{ padding: "8px" }}>{b.bus_no}</td>
                           <td style={{ padding: "8px", textAlign: "center" }}>{b.total_persons || countPassengers(seats)}</td>
                           <td style={{ padding: "8px", fontSize: 10 }}>{seats.join(", ")}</td>
