@@ -10,7 +10,7 @@ const VALID_USERNAME = "Imran_Chaus";
 const VALID_PASSWORD = "Imran@467";
 
 const DESTINATIONS = [
-  "Surat", "Nashik", "Aurangabad", "Gevrai", "Beed", "Jalna", "Latur",
+  "Surat", "Malegaon","Nashik", "Aurangabad", "Gevrai", "Beed", "Jalna", "Latur",
   "Solapur", "Parbhani", "Nanded", "Mumbai", "Pune", "Ahmednagar",
   "Bhiwandi", "Nagpur", "Ahmedabad", "Amravati", "Akola", "Chikli",
   "Buldhana", "Washim", "Mehkar", "Jalgaon", "Bhusawal", "Jaipur",
@@ -58,6 +58,7 @@ const PICKUP_POINTS = [
   "Padmavati Parking",
   "Swargate",
   "Rasta Peth",
+  "Malegaon",
   "Jahangir Hospital",
   "Wakdewadi",
   "Nashik Phata",
