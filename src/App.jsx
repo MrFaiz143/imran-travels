@@ -22,6 +22,15 @@ const PAYMENT_MODES = ["Cash Lena He", "Online"];
 
 const PICKUP_POINTS = [
   "Sardar Market Parsi Panchayat Parking",
+  "Udhana Darwaja",
+  "Udhana Teen Rasta",
+  "JP Bakery",
+  "Pandesara Chikuwadi",
+  "Daxerwar Mandir",
+  "Bhestan char rasta",
+  "Unn char rasta",
+  "sachin char rasta",
+  "Maroli char rasta",
   "Kadodra Nilam Hotel",
   "Palsana Sabar Hotel",
   "Navsari",
@@ -34,6 +43,7 @@ const PICKUP_POINTS = [
   "Shahagad",
   "Pachod",
   "Aurangabad",
+  "Aurangabad Man Mandir",
   "Gangapur",
   "kaij",
   "Ahmedabad",
@@ -43,8 +53,17 @@ const PICKUP_POINTS = [
   "Manjar sumba",
   "Ambajogai",
   "Latur",
-  "Aurangabad Mandir",
   "Waluj",
+  "Shirdi",
+  "Padmavati Parking",
+  "Swargate",
+  "Rasta Peth",
+  "Jahangir Hospital",
+  "Wakdewadi",
+  "Nashik Phata",
+  "Chinchwad",
+  "Somatane Phata",
+  "Talegaon Toll",
   "Nashik"
 ];
 
