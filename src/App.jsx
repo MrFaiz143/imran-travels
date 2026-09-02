@@ -27,6 +27,7 @@ const PICKUP_POINTS = [
   "JP Bakery",
   "Pandesara Chikuwadi",
   "Daxerwar Mandir",
+  "Kiran Petrol Pump Bus Parking",
   "Bhestan char rasta",
   "Unn char rasta",
   "sachin char rasta",
@@ -45,7 +46,7 @@ const PICKUP_POINTS = [
   "Aurangabad",
   "Aurangabad Man Mandir",
   "Gangapur",
-  "kaij",
+  "Kaij",
   "Ahmedabad",
   "Baroda",
   "Bharuch",
@@ -65,6 +66,10 @@ const PICKUP_POINTS = [
   "Chinchwad",
   "Somatane Phata",
   "Talegaon Toll",
+  "Shakkar Karkhana",
+  "Malkapur By Pass Buldhana",
+  "Padmavati Parking Pune",
+  "Maliwada Bus Station Nagar",
   "Nashik"
 ];
 
@@ -275,7 +280,6 @@ function TicketPrint({ booking }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: "1px solid #e8eaf6" }}>
           <div style={{ padding: "8px 10px", borderRight: "1px solid #e8eaf6" }}>
             <div style={{ fontSize: 8, fontWeight: 700, color: "#1a237e" }}>BUS NO</div>
-            {/* SIDEBAR BUS NO - RED */}
             <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2, color: "#e53935" }}>{booking.bus_no || "--"}</div>
           </div>
           <div style={{ padding: "8px 10px" }}>
@@ -328,8 +332,6 @@ function TicketPrint({ booking }) {
   );
 }
 
-
-
 const emptyForm = {
   passengerName: "", ticketNo: "", busNo: "", journeyDate: "",
   from: "", to: "", pickupPoint: "", time: "", amount: "", paymentMode: "Cash Lena He",
@@ -349,6 +351,13 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
+  // EDIT STATE VARIABLES
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingBooking, setEditingBooking] = useState(null);
+  const [editForm, setEditForm] = useState({ ...emptyForm });
+  const [editErrors, setEditErrors] = useState({});
+  const [updating, setUpdating] = useState(false);
+
   useEffect(() => {
     if (isLoggedIn) loadBookings();
   }, [isLoggedIn]);
@@ -366,6 +375,96 @@ export default function App() {
   const handleLogout = () => {
     sessionStorage.removeItem("imran_auth");
     setIsLoggedIn(false);
+  };
+
+  // EDIT FUNCTIONS
+  const openEditModal = (booking) => {
+    const seats = typeof booking.selected_seats === "string" 
+      ? JSON.parse(booking.selected_seats) 
+      : booking.selected_seats || [];
+    
+    setEditingBooking(booking);
+    setEditForm({
+      passengerName: booking.passenger_name || "",
+      ticketNo: booking.ticket_no || "",
+      busNo: booking.bus_no || "",
+      journeyDate: booking.journey_date || "",
+      from: booking.from_city || "",
+      to: booking.to_city || "",
+      pickupPoint: booking.pickup_point || "",
+      time: booking.time || "",
+      amount: booking.amount || "",
+      paymentMode: booking.payment_mode || "Cash Lena He",
+      manualSeatNo: seats.join(", "),
+      totalPersons: booking.total_persons || ""
+    });
+    setEditErrors({});
+    setEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setEditModalOpen(false);
+    setEditingBooking(null);
+    setEditForm({ ...emptyForm });
+    setEditErrors({});
+  };
+
+  const handleUpdateBooking = async () => {
+    // Validate
+    const e = {};
+    if (!editForm.passengerName.trim()) e.passengerName = "Required";
+    if (!editForm.ticketNo.trim()) e.ticketNo = "Required";
+    if (!editForm.busNo.trim()) e.busNo = "Required";
+    if (!editForm.journeyDate) e.journeyDate = "Required";
+    if (!editForm.from) e.from = "Required";
+    if (!editForm.to) e.to = "Required";
+    if (!editForm.time.trim()) e.time = "Required";
+    if (!editForm.amount) e.amount = "Required";
+    if (!editForm.manualSeatNo.trim()) e.seats = "Seat No likhna zaroori hai";
+    if (!editForm.totalPersons) e.totalPersons = "Total Persons likhna zaroori hai";
+    
+    if (Object.keys(e).length > 0) { setEditErrors(e); return; }
+
+    setUpdating(true);
+    
+    const finalSeats = editForm.manualSeatNo.split(",").map(s => s.trim());
+    const totalPersons = parseInt(editForm.totalPersons) || finalSeats.reduce((a, s) => a + (s.includes("-") ? 2 : 1), 0);
+
+    const updatedRecord = {
+      passenger_name: editForm.passengerName,
+      ticket_no: editForm.ticketNo,
+      bus_no: editForm.busNo,
+      journey_date: editForm.journeyDate,
+      from_city: editForm.from,
+      to_city: editForm.to,
+      pickup_point: editForm.pickupPoint,
+      time: editForm.time,
+      amount: editForm.amount,
+      payment_mode: editForm.paymentMode,
+      selected_seats: JSON.stringify(finalSeats),
+      total_persons: totalPersons,
+      updated_at: new Date().toISOString()
+    };
+
+    const { data, error } = await supabase
+      .from("bookings")
+      .update(updatedRecord)
+      .eq("id", editingBooking.id)
+      .select();
+
+    if (!error && data) {
+      // Update local state
+      setBookings(prev => prev.map(b => b.id === editingBooking.id ? data[0] : b));
+      setEditModalOpen(false);
+      setEditingBooking(null);
+      setEditForm({ ...emptyForm });
+      alert("✅ Booking updated successfully!");
+      loadBookings(); // Refresh list
+    } else {
+      alert("❌ Error updating booking! " + error?.message);
+    }
+    
+    setUpdating(false);
   };
 
   if (!isLoggedIn) {
@@ -623,8 +722,9 @@ export default function App() {
                           <td style={{ padding: "8px", fontSize: 10 }}>{seats.join(", ")}</td>
                           <td style={{ padding: "8px", fontWeight: 700 }}>₹{b.amount}</td>
                           <td style={{ padding: "8px" }}>{b.payment_mode}</td>
-                          <td style={{ padding: "8px" }}>
+                          <td style={{ padding: "8px", display: "flex", gap: "5px" }}>
                             <button onClick={() => { setCurrentTicket(b); setView("ticket"); }} style={{ padding: "5px 10px", background: "#1a237e", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 11, fontWeight: 700 }}>View</button>
+                            <button onClick={() => openEditModal(b)} style={{ padding: "5px 10px", background: "#f57c00", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 11, fontWeight: 700 }}>✏️ Edit</button>
                           </td>
                         </tr>
                       );
@@ -636,6 +736,166 @@ export default function App() {
           </div>
         )}
       </div>
+
+      {/* EDIT MODAL */}
+      {editModalOpen && (
+        <div style={{
+          position: "fixed",
+          top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.6)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          zIndex: 9999,
+          padding: "20px"
+        }}>
+          <div style={{
+            background: "#fff",
+            borderRadius: 16,
+            padding: "30px",
+            maxWidth: 700,
+            width: "100%",
+            maxHeight: "90vh",
+            overflowY: "auto",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.4)"
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+              <h2 style={{ color: "#1a237e", margin: 0, fontSize: 18, fontWeight: 800 }}>
+                ✏️ Edit Booking - {editingBooking?.ticket_no}
+              </h2>
+              <button onClick={closeEditModal} style={{
+                background: "none", border: "none", fontSize: 24, cursor: "pointer", color: "#888"
+              }}>✕</button>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              {/* Passenger Name */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>PASSENGER NAME</label>
+                <input type="text" value={editForm.passengerName}
+                  onChange={e => { setEditForm(f => ({ ...f, passengerName: e.target.value })); setEditErrors(er => ({ ...er, passengerName: "" })); }}
+                  style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: editErrors.passengerName ? "1.5px solid #e53935" : "1.5px solid #c5cae9", outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }} />
+                {editErrors.passengerName && <span style={{ fontSize: 10, color: "#e53935" }}>{editErrors.passengerName}</span>}
+              </div>
+
+              {/* Ticket No (Read-only) */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>TICKET NO (Read-only)</label>
+                <input type="text" value={editForm.ticketNo} readOnly
+                  style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: "1.5px solid #e0e0e0", outline: "none", background: "#f0f0f0", color: "#666", width: "100%", boxSizing: "border-box", marginTop: 4, cursor: "not-allowed" }} />
+              </div>
+
+              {/* Bus No */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>BUS NO</label>
+                <input type="text" value={editForm.busNo}
+                  onChange={e => { setEditForm(f => ({ ...f, busNo: e.target.value })); setEditErrors(er => ({ ...er, busNo: "" })); }}
+                  style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: editErrors.busNo ? "1.5px solid #e53935" : "1.5px solid #c5cae9", outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }} />
+                {editErrors.busNo && <span style={{ fontSize: 10, color: "#e53935" }}>{editErrors.busNo}</span>}
+              </div>
+
+              {/* Journey Date */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>JOURNEY DATE</label>
+                <input type="date" value={editForm.journeyDate}
+                  onChange={e => { setEditForm(f => ({ ...f, journeyDate: e.target.value })); setEditErrors(er => ({ ...er, journeyDate: "" })); }}
+                  style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: editErrors.journeyDate ? "1.5px solid #e53935" : "1.5px solid #c5cae9", outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }} />
+                {editErrors.journeyDate && <span style={{ fontSize: 10, color: "#e53935" }}>{editErrors.journeyDate}</span>}
+              </div>
+
+              {/* From */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>FROM</label>
+                <select value={editForm.from} onChange={e => { setEditForm(f => ({ ...f, from: e.target.value })); setEditErrors(er => ({ ...er, from: "" })); }}
+                  style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: editErrors.from ? "1.5px solid #e53935" : "1.5px solid #c5cae9", outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }}>
+                  <option value="">-- Select --</option>
+                  {DESTINATIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                </select>
+                {editErrors.from && <span style={{ fontSize: 10, color: "#e53935" }}>{editErrors.from}</span>}
+              </div>
+
+              {/* To */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>TO</label>
+                <select value={editForm.to} onChange={e => { setEditForm(f => ({ ...f, to: e.target.value })); setEditErrors(er => ({ ...er, to: "" })); }}
+                  style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: editErrors.to ? "1.5px solid #e53935" : "1.5px solid #c5cae9", outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }}>
+                  <option value="">-- Select --</option>
+                  {DESTINATIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                </select>
+                {editErrors.to && <span style={{ fontSize: 10, color: "#e53935" }}>{editErrors.to}</span>}
+              </div>
+
+              {/* Pickup Point */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>PICKUP POINT</label>
+                <select value={editForm.pickupPoint} onChange={e => { setEditForm(f => ({ ...f, pickupPoint: e.target.value })); setEditErrors(er => ({ ...er, pickupPoint: "" })); }}
+                  style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: editErrors.pickupPoint ? "1.5px solid #e53935" : "1.5px solid #c5cae9", outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }}>
+                  <option value="">-- Select --</option>
+                  {PICKUP_POINTS.map(o => <option key={o} value={o}>{o}</option>)}
+                </select>
+                {editErrors.pickupPoint && <span style={{ fontSize: 10, color: "#e53935" }}>{editErrors.pickupPoint}</span>}
+              </div>
+
+              {/* Time */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>TIME</label>
+                <input type="text" value={editForm.time} placeholder="e.g. 08:30 PM"
+                  onChange={e => { setEditForm(f => ({ ...f, time: e.target.value })); setEditErrors(er => ({ ...er, time: "" })); }}
+                  style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: editErrors.time ? "1.5px solid #e53935" : "1.5px solid #c5cae9", outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }} />
+                {editErrors.time && <span style={{ fontSize: 10, color: "#e53935" }}>{editErrors.time}</span>}
+              </div>
+
+              {/* Amount */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>AMOUNT (₹)</label>
+                <input type="number" value={editForm.amount} placeholder="e.g. 800"
+                  onChange={e => { setEditForm(f => ({ ...f, amount: e.target.value })); setEditErrors(er => ({ ...er, amount: "" })); }}
+                  style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: editErrors.amount ? "1.5px solid #e53935" : "1.5px solid #c5cae9", outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }} />
+                {editErrors.amount && <span style={{ fontSize: 10, color: "#e53935" }}>{editErrors.amount}</span>}
+              </div>
+
+              {/* Payment Mode */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>PAYMENT MODE</label>
+                <select value={editForm.paymentMode} onChange={e => { setEditForm(f => ({ ...f, paymentMode: e.target.value })); setEditErrors(er => ({ ...er, paymentMode: "" })); }}
+                  style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: editErrors.paymentMode ? "1.5px solid #e53935" : "1.5px solid #c5cae9", outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }}>
+                  {PAYMENT_MODES.map(o => <option key={o} value={o}>{o}</option>)}
+                </select>
+                {editErrors.paymentMode && <span style={{ fontSize: 10, color: "#e53935" }}>{editErrors.paymentMode}</span>}
+              </div>
+
+              {/* Seat No */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>SEAT NO</label>
+                <input type="text" value={editForm.manualSeatNo} placeholder="e.g. 17-18 ya A, B"
+                  onChange={e => { setEditForm(f => ({ ...f, manualSeatNo: e.target.value })); setEditErrors(er => ({ ...er, seats: "" })); }}
+                  style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: editErrors.seats ? "1.5px solid #e53935" : "1.5px solid #c5cae9", outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }} />
+                {editErrors.seats && <span style={{ fontSize: 10, color: "#e53935" }}>{editErrors.seats}</span>}
+              </div>
+
+              {/* Total Persons */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: "#1a237e" }}>TOTAL PERSONS</label>
+                <input type="number" value={editForm.totalPersons} placeholder="e.g. 1, 2"
+                  onChange={e => { setEditForm(f => ({ ...f, totalPersons: e.target.value })); setEditErrors(er => ({ ...er, totalPersons: "" })); }}
+                  style={{ padding: "9px 12px", borderRadius: 6, fontSize: 13, border: editErrors.totalPersons ? "1.5px solid #e53935" : "1.5px solid #c5cae9", outline: "none", background: "#f8f9ff", color: "#222", width: "100%", boxSizing: "border-box", marginTop: 4 }} />
+                {editErrors.totalPersons && <span style={{ fontSize: 10, color: "#e53935" }}>{editErrors.totalPersons}</span>}
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 20, borderTop: "1px solid #e8eaf6", paddingTop: 20 }}>
+              <button onClick={closeEditModal} style={{
+                padding: "10px 24px", background: "#e8eaf6", color: "#1a237e",
+                borderRadius: 8, fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer"
+              }}>Cancel</button>
+              <button onClick={handleUpdateBooking} disabled={updating} style={{
+                padding: "10px 28px", background: updating ? "#9fa8da" : "#1a237e", color: "#fff",
+                borderRadius: 8, fontSize: 13, fontWeight: 700, border: "none", cursor: updating ? "not-allowed" : "pointer",
+                boxShadow: "0 3px 10px rgba(26,35,126,0.3)"
+              }}>{updating ? "⏳ Updating..." : "✅ Update Booking"}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
