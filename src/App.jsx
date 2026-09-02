@@ -10,12 +10,12 @@ const VALID_USERNAME = "Imran_Chaus";
 const VALID_PASSWORD = "Imran@467";
 
 const DESTINATIONS = [
-  "Surat", "Malegaon","Nashik", "Aurangabad", "Gevrai", "Beed", "Jalna", "Latur",
-  "Solapur", "Parbhani", "Nanded", "Mumbai", "Pune", "Ahmednagar",
-  "Bhiwandi", "Nagpur", "Ahmedabad", "Amravati", "Akola", "Chikli",
-  "Buldhana", "Washim", "Mehkar", "Jalgaon", "Bhusawal", "Jaipur",
-  "Ajmer", "Bangalore", "Hyderabad", "Malegaon", "kaij", "Ambajogai",
-  "Baroda","Bharuch","Ankleshwar","Manjar sumba"
+  "Surat","Bardoli","Baroda","Malegaon","Nashik", "Aurangabad", "Gevrai", "Beed", "Jalna", "Latur",
+  "Bhusawal","Solapur", "Parbhani", "Charoti", "Dhule", "Nanded", "Lonavala", "Mumbai", "Pune", "Ahmednagar",
+  "Bhiwandi", "Nagpur", "Ahmedabad", "Rajkot", "Saputara", "Yavatmal", "Amravati", "Akola", "Chikli",
+  "Buldhana", "Washim", "Mehkar", "Jalgaon", "Parola", "Bhusawal", "Jaipur",
+  "Ajmer", "Bangalore", "Hyderabad", "Malegaon", "Kaij", "Ambajogai",
+  "Baroda","Bharuch","Ankleshwar","Manjar sumba","Shirdi"
 ];
 
 const PAYMENT_MODES = ["Cash Lena He", "Online"];
@@ -50,7 +50,7 @@ const PICKUP_POINTS = [
   "Ahmedabad",
   "Baroda",
   "Bharuch",
-  "Ankleshawr",
+  "Ankleshwar",
   "Manjar sumba",
   "Ambajogai",
   "Latur",
